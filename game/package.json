@@ -1,0 +1,58 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "hap server --watch",
+    "server": "hap server",
+    "gen": "node ./script/gen/index.js",
+    "build": "hap build",
+    "release": "hap release",
+    "watch": "hap watch",
+    "debug": "hap debug",
+    "precommit-msg": "echo '🚧 start pre-commit checks...' && exit 0",
+    "prettier": "node ./scripts/selfCloseInputTag.js && prettier --write \"src/**/*.{js,ux,less,scss,css}\"",
+    "prettier-watch": "onchange '**/*.md' \"src/**/**/*.{js,ux,less,scss,css}\" -- prettier --write {{changed}}"
+  },
+  "dependencies": {
+    "apex-ui": "latest",
+    "axios": "^0.24.0",
+    "axios-miniprogram-adapter": "^0.3.2",
+    "hap": "^2.1.1",
+    "jquery": "^3.6.0"
+  },
+  "devDependencies": {
+    "@types/quickapp": "git+https://gitee.com/vivoquickapp/quickapp-types.git",
+    "husky": "^4.3.0",
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "lint-staged": "^10.5.1",
+    "onchange": "^5.2.0",
+    "prettier": "^1.15.3",
+    "prettier-plugin-ux": "^0.3.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false,
+    "printWidth": 80,
+    "proseWrap": "never"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn run precommit-msg && lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/**.{ux,js,json,pcss,md,vue}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "keywords": [
+    "快应用",
+    "商城"
+  ],
+  "browserslist": [
+    "chrome 65"
+  ]
+}
