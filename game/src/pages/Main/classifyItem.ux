@@ -1,0 +1,84 @@
+<template>
+  <list class="list-container">
+    <list-item
+      class="item-recommend"
+      type="recommend"
+      for="{{datas}}"
+      onclick="onItemClick"
+    >
+      <text class="recommend-text-title">{{ $item.title }}</text>
+      <div class="recommend-list-container">
+        <div class="recommend-list-wrap" for="{{product in $item.list}}">
+          <image class="recommend-list-image" src="{{product.img}}"></image>
+          <text class="recommend-list-text-name">{{ product.name }}</text>
+        </div>
+      </div>
+
+      <div class="recommend-line-bottom" show="{{$idx < datas.length-1}}"></div>
+    </list-item>
+  </list>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  props: {
+    datas: {
+      default: []
+    }
+  },
+  onItemClick() {
+    router.push({
+      uri: 'pages/Goods'
+    })
+  }
+}
+</script>
+
+<style lang="less">
+.list-container {
+  flex-direction: column;
+  width: 75%;
+  height: 100%;
+  .item-recommend {
+    flex-direction: column;
+    width: 100%;
+    .recommend-text-title {
+      color: #000000;
+      margin: 20px;
+      font-size: 30px;
+      font-weight: bold;
+    }
+    .recommend-list-container {
+      width: 100%;
+      flex-direction: row;
+      flex-wrap: wrap;
+      .recommend-list-wrap {
+        align-items: center;
+        width: 33%;
+        flex-direction: column;
+        .recommend-list-image {
+          width: 80%;
+        }
+        .recommend-list-text-name {
+          lines: 1;
+          text-overflow: ellipsis;
+          padding: 20px;
+          color: #000000;
+          text-align: center;
+          font-size: 30px;
+        }
+      }
+    }
+    .recommend-line-bottom {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      background-color: #808080;
+      width: 90%;
+      height: 1px;
+      align-self: center;
+    }
+  }
+}
+</style>

@@ -1,0 +1,617 @@
+<import name="my-avatar" src="apex-ui/components/avatar/index"></import>
+
+<template>
+  <div class="page-container">
+
+    <div class="roominfo">
+        <text>房间号：</text>
+        <text>164598 </text>
+        <text>您的身份是：</text>
+        <text>狼人 </text>
+    </div>
+
+    <div class="opertion">
+      <div>
+      <div>
+        <a class="btn" onclick="makeroom()">创建房间</a>
+      </div>
+
+      <div>
+        <a class="btn"  onclick="joinin()">加入游戏</a>
+      </div>
+    </div>
+    </div>
+
+    <div class="process">
+
+    </div>
+
+
+    <stack class="stack-container">
+      <list
+        class="list-container"
+        onscrolltop="onScrollTop"
+        onscroll="onScroll"
+      >
+        <list-item
+          class="item-images"
+          type="goodsImgs"
+          ondisappear="showMask"
+          onappear="hideMask"
+        >
+          <swiper
+            class="images-swiper"
+            autoplay="{{autoPlay}}"
+            interval="{{sliderValue}}"
+            indicator="{{indicator}}"
+            duration="{{durationValue}}"
+            vertical="{{isVertical}}"
+            previousmargin="{{marginValue}}"
+            nextmargin="{{marginValue}}"
+            loop="{{loopPlay}}"
+            style="indicator-bottom: {{topValue}}"
+          >
+            <image
+              class="images-image"
+              for="{{datas.imgs}}"
+              src="{{$item}}"
+            ></image>
+          </swiper>
+        </list-item>
+
+        <list-item class="item-price" type="goodsPrice">
+          <text class="price-text-price">¥{{ checkedSize.price }}</text>
+          <text class="price-text-oldprice">{{ checkedSize.oldPrice }}</text>
+          <text class="price-text-discount">{{ checkedSize.discount }}折</text>
+        </list-item>
+
+        <list-item class="item-title" type="goodsTitle">
+          <div class="title-line"></div>
+          <text class="title-text-title">{{ datas.title }}</text>
+          <text class="title-text-declare">{{ datas.declare }}</text>
+        </list-item>
+
+        <list-item class="item-size" type="goodsSize">
+          <text class="size-text-title">{{ datas.sizeTitle }}</text>
+          <div class="size-group">
+            <stack
+              class="size-stack"
+              for="{{datas.size}}"
+              style="border-color: {{ $item.isChecked ? '#d4237a' : '#808080' }}"
+              @click="onSizeChecked($idx)"
+            >
+              <text
+                class="size-text-specifications"
+                style="color: {{ $item.isChecked ? '#d4237a' : '#808080' }}"
+                >{{ $item.specifications }}</text
+              >
+              <image
+                class="size-image"
+                src="../../assets/images/select.png"
+                show="{{ $item.isChecked }}"
+              ></image>
+            </stack>
+          </div>
+        </list-item>
+
+        <list-item class="item-rules" type="goodsRules">
+          <block for="{{datas.rules}}">
+            <text class="rules-text">{{ $item }}</text>
+          </block>
+        </list-item>
+
+        <list-item class="item-reputation" type="goodsReputation">
+          <text class="reputation-text-title">口碑精选</text>
+          <text class="reputation-text-subtitle">购买过该商品的用户认为</text>
+          <div class="reputation-labels-wrap">
+            <text
+              class="reputation-text-label"
+              for="{{datas.reputation.labels}}"
+              >{{ $item }}</text
+            >
+          </div>
+          <div class="reputation-commenter-wrap">
+            <my-avatar
+              src="{{datas.reputation.commenterImg}}"
+              size="small"
+            ></my-avatar>
+            <text class="reputation-text-number">{{
+              datas.reputation.commenterNumber
+            }}</text>
+          </div>
+          <text class="reputation-text-comment">{{
+            datas.reputation.comment
+          }}</text>
+        </list-item>
+
+        <list-item class="item-brand" type="goodsBrand">
+          <my-avatar
+            src="{{datas.brand.icon}}"
+            size="large"
+            shape="square"
+          ></my-avatar>
+          <text class="brand-text-name">{{ datas.brand.name }}</text>
+        </list-item>
+
+        <list-item class="item-introduce" type="goodsIntroduce">
+          <text class="introduce-text-title">商品介绍</text>
+          <div class="introduce-wrap" for="{{datas.introduce}}">
+            <text class="introduce-text-name">{{ $item.name }}:</text>
+            <text class="introduce-text-value">{{ $item.value }}</text>
+          </div>
+        </list-item>
+
+        <list-item class="item-imagetext" type="goodsImageText">
+          <text class="imagetext-text-title">图文详情</text>
+          <image
+            class="imagetext-image"
+            for="{{datas.imageText}}"
+            src="{{$item}}"
+          ></image>
+        </list-item>
+      </list>
+
+      <div class="titlebar-container">
+        <div
+          class="titlebar-wrap"
+          style="background-color: {{ isTop ? 'transparent' : '#ffffff' }}"
+        >
+          <image
+            class="titlebar-image-back"
+            src="../../assets/images/b.png"
+            @click="onBack"
+          ></image>
+          <text class="titlebar-text-title" show="{{!isTop}}">{{
+            datas.name
+          }}</text>
+        </div>
+        <div class="titlebar-line" show="{{!isTop}}"></div>
+      </div>
+    </stack>
+
+    <div class="bottom-container">
+      <div class="bottom-line"></div>
+      <div class="bottom-wrap">
+        <div class="bottom-shoppingcar-wrap">
+          <stack class="bottom-stack-shoppingcar">
+            <image
+              class="bottom-image-shoppingcar"
+              src="../../assets/images/car_small.png"
+            ></image>
+            <text class="bottom-text-count" show="{{pickedCount !== 0}}">{{
+              pickedCount
+            }}</text>
+          </stack>
+        </div>
+
+        <div class="bottom-buttons-wrap">
+          <input
+            class="bottom-button-addcar"
+            type="button"
+            value="加入购物车"
+            @click="onClickAddCar"
+          />
+          <input
+            class="bottom-button-buynow"
+            type="button"
+            value="立即购买"
+            @click="onClickBuyNow"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style lang="less">
+.page-container {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  .btn {
+    width: 200px;
+    height: 86px;
+    
+    margin: 20px;
+    margin-top: 75px;
+    border-radius: 43px;
+    background-color: #4286f5;
+    font-size: 30px;
+    text-align: center;
+    color: #ffffff;
+  }
+  .stack-container {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    .list-container {
+      flex: 1;
+      width: 100%;
+      background-color: #eeeeee;
+      flex-direction: column;
+      .item-images {
+        width: 100%;
+        height: 800px;
+        background-color: #ffffff;
+        .images-swiper {
+          width: 100%;
+          height: 100%;
+          .images-image {
+            width: 100%;
+            height: 100%;
+          }
+        }
+      }
+      .item-price {
+        background-color: #ffffff;
+        width: 100%;
+        flex-direction: row;
+        padding: 32px;
+        .price-text-price {
+          font-size: 45px;
+          color: #000000;
+        }
+        .price-text-oldprice {
+          font-size: 35px;
+          color: #c7c2c2;
+          margin: 16px;
+          text-decoration: line-through;
+        }
+        .price-text-discount {
+          font-size: 35px;
+          color: #c7c2c2;
+        }
+      }
+      .item-title {
+        padding: 32px;
+        flex-direction: column;
+        background-color: #ffffff;
+        .title-line {
+          width: 100%;
+          height: 1px;
+          background-color: #eeeeee;
+        }
+        .title-text-title {
+          margin-top: 32px;
+          width: 100%;
+          font-size: 35px;
+          color: #000000;
+        }
+        .title-text-declare {
+          width: 100%;
+          font-size: 30px;
+          color: #c7c2c2;
+        }
+      }
+      .item-size {
+        flex-direction: column;
+        width: 100%;
+        padding: 32px;
+        margin-top: 32px;
+        background-color: #ffffff;
+        .size-text-title {
+          font-size: 35px;
+          color: #000000;
+        }
+        .size-group {
+          flex-direction: row;
+          padding-top: 32px;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          .size-stack {
+            width: 30%;
+            height: 64px;
+            border-radius: 8px;
+            border-width: 2px;
+            border-color: #d4237a;
+            align-items: flex-end;
+            justify-content: flex-end;
+            .size-text-specifications {
+              width: 100%;
+              height: 100%;
+              font-size: 30px;
+              color: #d4237a;
+              text-align: center;
+            }
+            .size-image {
+              width: 30px;
+              height: 30px;
+              align-self: flex-end;
+            }
+          }
+        }
+      }
+      .item-rules {
+        width: 100%;
+        margin-top: 32px;
+        margin-bottom: 32px;
+        background-color: #ffffff;
+        padding: 32px;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        .rules-text {
+          color: #808080;
+          font-size: 25px;
+          lines: 1;
+        }
+      }
+      .item-reputation {
+        width: 100%;
+        padding: 32px;
+        background-color: #ffffff;
+        flex-direction: column;
+        margin-bottom: 32px;
+        .reputation-text-title {
+          font-size: 35px;
+          color: #000000;
+        }
+        .reputation-text-subtitle {
+          font-size: 25px;
+          color: #808080;
+        }
+        .reputation-labels-wrap {
+          width: 100%;
+          flex-wrap: wrap;
+          margin-top: 16px;
+          .reputation-text-label {
+            margin-left: 8px;
+            margin-right: 8px;
+            font-size: 20px;
+            color: #4179f0;
+            border-width: 1px;
+            border-color: #4179f0;
+            text-align: center;
+            padding: 8px;
+          }
+        }
+        .reputation-commenter-wrap {
+          width: 100%;
+          flex-direction: row;
+          margin-top: 16px;
+          margin-bottom: 16px;
+          .reputation-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 32px;
+          }
+          .reputation-text-number {
+            margin-left: 16px;
+            font-size: 25px;
+            color: #000000;
+          }
+        }
+        .reputation-text-comment {
+          font-size: 25px;
+          color: #000000;
+        }
+      }
+      .item-brand {
+        width: 100%;
+        padding: 32px;
+        background-color: #ffffff;
+        align-items: center;
+        .brand-image {
+          width: 160px;
+          height: 160px;
+          border-width: 1px;
+          border-color: #eeeeee;
+        }
+        .brand-text-name {
+          padding: 32px;
+          font-size: 35px;
+          color: #000000;
+        }
+      }
+      .item-introduce {
+        width: 100%;
+        padding: 32px;
+        background-color: #ffffff;
+        flex-direction: column;
+        margin-top: 32px;
+        .introduce-text-title {
+          font-size: 35px;
+          color: #000000;
+        }
+        .introduce-wrap {
+          flex-direction: row;
+          padding-top: 8px;
+          padding-bottom: 8px;
+          align-items: flex-start;
+          .introduce-text-name {
+            width: 25%;
+            lines: 1;
+            font-size: 30px;
+            color: #808080;
+          }
+          .introduce-text-value {
+            flex: 1;
+            font-size: 30px;
+            color: #000000;
+          }
+        }
+      }
+      .item-imagetext {
+        width: 100%;
+        margin-top: 32px;
+        flex-direction: column;
+        background-color: #ffffff;
+        .imagetext-text-title {
+          font-size: 35px;
+          color: #000000;
+          padding: 32px;
+        }
+        .imagetext-image {
+          width: 100%;
+        }
+      }
+    }
+    .titlebar-container {
+      flex-direction: column;
+      width: 100%;
+      background-color: transparent;
+      .titlebar-wrap {
+        flex-direction: row;
+        width: 100%;
+        height: 100px;
+        padding: 16px;
+        background-color: transparent;
+        align-items: center;
+        .titlebar-image-back {
+          background-color: #ffffff;
+          width: 64px;
+          height: 64px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 40px;
+        }
+        .titlebar-text-title {
+          color: #000000;
+          margin-left: 80px;
+          lines: 1;
+          text-overflow: ellipsis;
+          font-size: 40px;
+        }
+      }
+      .titlebar-line {
+        width: 100%;
+        height: 2px;
+        background-color: #f5f5dc;
+      }
+    }
+  }
+  .bottom-container {
+    width: 100%;
+    flex-direction: column;
+    .bottom-line {
+      width: 100%;
+      height: 2px;
+      background-color: #eeeeee;
+    }
+    .bottom-wrap {
+      width: 100%;
+      flex-direction: row;
+      padding: 32px;
+      justify-content: space-between;
+      .bottom-shoppingcar-wrap {
+        width: 32%;
+        border-width: 1px;
+        border-radius: 6px;
+        border-color: #808080;
+        align-items: center;
+        justify-content: center;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        .bottom-stack-shoppingcar {
+          width: 64px;
+          height: 64px;
+          align-items: flex-start;
+          justify-content: flex-end;
+          .bottom-image-shoppingcar {
+            width: 100%;
+            height: 100%;
+            padding: 8px;
+          }
+          .bottom-text-count {
+            width: 32px;
+            height: 32px;
+            background-color: #d4237a;
+            border-radius: 32px;
+            color: #ffffff;
+            font-size: 20px;
+            text-align: center;
+          }
+        }
+      }
+      .bottom-buttons-wrap {
+        flex-direction: row;
+        width: 64%;
+        .bottom-button-addcar {
+          width: 50%;
+          padding-top: 8px;
+          padding-bottom: 8px;
+          border-top-left-radius: 6px;
+          border-bottom-left-radius: 6px;
+          background-color: #d4237a;
+          font-size: 30px;
+          color: #ffffff;
+        }
+        .bottom-button-buynow {
+          width: 50%;
+          padding-top: 8px;
+          padding-bottom: 8px;
+          border-top-right-radius: 6px;
+          border-bottom-right-radius: 6px;
+          background-color: #000000;
+          font-size: 30px;
+          color: #ffffff;
+        }
+
+      }
+    }
+  }
+}
+</style>
+
+<script>
+import router from '@system.router'
+import { goodsDatas } from '../../assets/js/goodsData'
+
+export default {
+  private: {
+    isTop: true,
+    datas: goodsDatas,
+    autoPlay: false,
+    sliderValue: 1000,
+    indicator: true,
+    durationValue: 1000,
+    isVertical: false,
+    marginValue: 0,
+    loopPlay: true,
+    topValue: 10,
+    checkedSize: {},
+    pickedCount: 0
+  },
+  onInit() {
+    const that = this
+    this.datas.size.forEach(item => {
+      if (item.isChecked) {
+        that.checkedSize = item
+      }
+    })
+  },
+  onBack() {
+    router.back()
+  },
+  onScrollTop() {
+    const that = this
+    setTimeout(() => {
+      that.isTop = true
+    }, 100)
+  },
+  onScroll(param) {
+    if (this.isTop && 0 != param.scrollY) {
+      this.isTop = false
+    }
+  },
+  onSizeChecked(index) {
+    const that = this
+    this.datas.size.forEach((item, idx) => {
+      item.isChecked = idx === index
+      if (item.isChecked) {
+        that.checkedSize = item
+      }
+    })
+  },
+  onClickAddCar() {
+    this.pickedCount++
+  },
+  onClickBuyNow() {
+    // 页面被切换隐藏时，将要传递的数据对象写入
+    this.$app.setAppData('activeTab', 2)
+    router.push({
+      uri: 'pages/Main'
+    })
+  }
+}
+</script>

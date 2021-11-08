@@ -1,0 +1,36 @@
+<script>
+/**
+ * @desc: 应用级别的配置、方法，供所有页面公用；
+ */
+import { $util, $apis } from './helper'
+
+/* @desc: 注入方法至全局 global,以便页面调用 */
+const hook2global = global.__proto__ || global
+hook2global.$apis = $apis
+
+export default {
+  $apis: $apis,
+  showMenu: $util.showMenu,
+  createShortcut: $util.createShortcut,
+  orders: [],
+  onCreate() {
+    // 初始化 app 缓存的数据
+    this.dataCache = {}
+  },
+  /**
+   * 获取 app 缓存的数据
+   * @param key
+   */
+  getAppData(key) {
+    return this.dataCache[key]
+  },
+  /**
+   * 设置 app 缓存的数据
+   * @param key
+   * @param val
+   */
+  setAppData(key, val) {
+    this.dataCache[key] = val
+  }
+}
+</script>

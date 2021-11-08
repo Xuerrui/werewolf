@@ -1,0 +1,129 @@
+<import name="personalCenter" src="./personalCenter.ux"></import>
+<import name="home" src="./home.ux"></import>
+<import name="classify" src="./classify.ux"></import>
+<import name="shoppingCar" src="./shoppingCar.ux"></import>
+
+<template>
+  <div class="page-container">
+    <tabs onchange="changeTab" index="{{activeTab}}">
+      <tab-content>
+        <div class="content-container">
+          <div if="{{this.selectedTab === '首页'}}">
+            <home></home>
+          </div>
+          <div if="{{this.selectedTab ==='分类'}}">
+            <classify></classify>
+          </div>
+          <div if="{{this.selectedTab === '购物车'}}">
+            <shoppingCar is-full="{{isFull}}"></shoppingCar>
+          </div>
+          <div if="{{this.selectedTab === '个人中心'}}">
+            <personalCenter></personalCenter>
+          </div>
+        </div>
+      </tab-content>
+
+      <tab-bar class="tab-bar">
+        <div class="tab-item" for="tabList">
+          <text
+            class="iconfont"
+            style="color: {{$item.title === this.selectedTab ? this.activedColor : this.deactivedColor}}"
+          >
+            {{ $item.icon }}
+          </text>
+          <text
+            class="tab-title"
+            style="color: {{$item.title === this.selectedTab ? this.activedColor : this.deactivedColor}}"
+          >
+            {{ $item.title }}
+          </text>
+        </div>
+      </tab-bar>
+    </tabs>
+  </div>
+</template>
+
+<script>
+export default {
+  private: {
+    tabList: [
+      {
+        title: '首页',
+        icon: '\ue619'
+      },
+      {
+        title: '分类',
+        icon: '\ue600'
+      },
+      {
+        title: '购物车',
+        icon: '\ue655'
+      },
+      {
+        title: '个人中心',
+        icon: '\ue607'
+      }
+    ],
+    selectedTab: '首页',
+    deactivedColor: '#707780',
+    activedColor: ' #20a0ff',
+    activeTab: 0,
+    isFull: false
+  },
+  onInit() {},
+  /* -------------------SelfCustomEvent------------------ */
+  changeTab(e) {
+    this.activeTab = e.index
+    let index = e.index || 0
+    this.selectedTab = this.tabList[index].title
+    this.$page.setTitleBar({
+      text: this.selectedTab,
+      menu: false
+    })
+  },
+  onShow() {
+    // 页面被切换显示时，从数据中检查是否有页面B传递来的数据
+    const data = this.$app.getAppData('activeTab')
+    this.isFull = !!data
+    if (data) {
+      this.activeTab = data
+      // 读取后需清空
+      this.$app.setAppData('activeTab', null)
+    }
+  }
+}
+</script>
+
+<style lang="less">
+text {
+  font-size: 40px;
+  text-align: center;
+}
+
+@font-face {
+  font-family: iconfont;
+  src: url('/assets/iconfont/iconfont.ttf');
+}
+.iconfont {
+  font-family: iconfont;
+}
+
+.page-container {
+  flex-direction: column;
+  .tab-bar {
+    background-color: #fafafa;
+    border-top-width: 1px;
+    border-top-color: #f2f2f2;
+    .tab-item {
+      flex-direction: column;
+      justify-content: center;
+      .iconfont {
+        font-size: 50px;
+      }
+      .tab-title {
+        font-size: 20px;
+      }
+    }
+  }
+}
+</style>

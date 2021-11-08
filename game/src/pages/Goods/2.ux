@@ -1,0 +1,150 @@
+<template>
+  <!-- 列表实现，监听列表的scrollbottom事件，列表滚动到底部时加载更多数据 -->
+  <list class="page-container" onscrollbottom="renderMoreListItem">
+    <!-- 商品列表 -->
+    <list-item
+      type="product"
+      class="item-product"
+      for="products"
+      onclick="onItemClick($idx)"
+    >
+      <image class="product-image" src="{{$item.img}}"></image>
+      <div class="product-text-wrap">
+        <text class="product-text-name">{{ $item.name }}</text>
+        <text class="product-text-price">{{ $item.price }}</text>
+      </div>
+    </list-item>
+
+    <list-item type="loadStatus" class="load-status">
+      <progress type="circular" show="{{hasMoreData}}"></progress>
+      <text show="{{hasMoreData}}">加载更多</text>
+      <text show="{{!hasMoreData}}">没有更多了~</text>
+    </list-item>
+  </list>
+</template>
+
+<script>
+import { homeDatas } from '../../assets/js/homeData'
+import router from '@system.router'
+
+// 模拟fetch请求数据
+function callFetch(callback) {
+  setTimeout(function() {
+    callback(homeDatas)
+  }, 500)
+}
+
+// 内存中存储的列表数据
+let memList = []
+
+export default {
+  data: {
+    products: [],
+    hasMoreData: true,
+    // 每次渲染的商品数
+    size: 10,
+    // 是否正在fetch请求数据
+    isLoadingData: false
+  },
+  onInit() {
+    this.products = []
+    // 获取数据并渲染列表
+    this.loadAndRender()
+  },
+  /**
+   * 请求并渲染
+   */
+  loadAndRender(doRender = true) {
+    this.isLoadingData = true
+    // 重新请求数据并根据模式判断是否需要渲染列表
+    callFetch(
+      function(resList) {
+        this.isLoadingData = false
+        if (!resList) {
+          console.error(`数据请求错误`)
+        } else if (!resList.length) {
+          this.hasMoreData = false
+        } else {
+          memList = memList.concat(resList)
+          if (doRender) {
+            this._renderList()
+          }
+        }
+      }.bind(this)
+    )
+  },
+  _renderList() {
+    // 渲染列表
+    if (memList.length > 0) {
+      const list = memList.splice(0, this.size)
+      this.products = this.products.concat(list)
+    }
+    if (memList.length <= this.size) {
+      // 提前请求新的数据
+      this.loadAndRender(false)
+    }
+  },
+  /**
+   * 滑动到底部时加载更多
+   */
+  renderMoreListItem() {
+    if (!this.isLoadingData) {
+      this._renderList()
+    }
+  },
+  onItemClick(index) {
+    router.push({ uri: 'pages/Goods' })
+  }
+}
+</script>
+
+<style lang="less">
+@import '../../assets/styles/style.less';
+
+.page-container {
+  width: 100%;
+  background-color: #f0f0eb;
+  flex-direction: column;
+  .item-product {
+    background-color: #ffffff;
+    flex-direction: column;
+    width: 100%;
+    height: 480px;
+    border-radius: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    .product-image {
+      width: 100%;
+      height: 67%;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+    .product-text-wrap {
+      width: 100%;
+      height: 33%;
+      justify-content: center;
+      padding: 16px;
+      background-color: #ffffff;
+      flex-direction: column;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      .product-text-name {
+        color: #000000;
+        font-size: 32px;
+      }
+      .product-text-price {
+        margin-top: 8px;
+        color: #ec4848;
+        font-size: 30px;
+      }
+    }
+  }
+  .load-status {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+</style>

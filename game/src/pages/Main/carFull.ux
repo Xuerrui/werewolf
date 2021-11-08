@@ -1,0 +1,272 @@
+<import
+  name="my-input-number"
+  src="apex-ui/components/input-number/index"
+></import>
+
+<template>
+  <div class="page-container">
+    <list class="list-container">
+      <list-item class="item-head" type="head">
+        <image class="head-image" src="../../assets/images/save.png"></image>
+        <text class="head-text">{{ saveText }}</text>
+      </list-item>
+
+      <list-item class="item-title" type="title">
+        <text class="title-text-title">{{ title }}</text>
+        <div class="title-line"></div>
+      </list-item>
+
+      <list-item class="item-order" type="order" for="{{datas}}">
+        <div class="order-top-wrap">
+          <div class="order-image-wrap">
+            <image src="{{$item.img}}"></image>
+          </div>
+
+          <div class="order-details-wrap">
+            <text class="order-text-title">{{ $item.title }}</text>
+            <text class="order-text-brief">{{ $item.brief }}</text>
+            <text class="order-text-size">{{ $item.size }}</text>
+          </div>
+
+          <div class="order-price-wrap">
+            <text class="order-text-price">¥{{ $item.price }}</text>
+            <text class="order-text-oldprice">¥{{ $item.oldPrice }}</text>
+          </div>
+        </div>
+        <div class="order-end-wrap">
+          <div class="order-placeholder-1"></div>
+          <my-input-number
+            min="{{0}}"
+            max="{{100}}"
+            value="{{1}}"
+            onchange="changeHandler"
+          ></my-input-number>
+          <div class="order-placeholder-2"></div>
+          <image
+            class="order-image-delete"
+            src="../../assets/images/delete.png"
+          ></image>
+        </div>
+      </list-item>
+
+      <list-item class="item-end" type="end">
+        <div class="end-line"></div>
+        <text class="end-text-amount">¥{{ totalAmount }}</text>
+        <text class="end-text-promotion">{{ promotion }}</text>
+      </list-item>
+    </list>
+
+    <div class="bottom-container">
+      <text class="bottom-text">
+        <span class="bottom-span-describe">总金额</span>
+        <span class="bottom-span-amount">¥{{ totalAmount }}</span>
+      </text>
+      <input class="bottom-button" type="button" value="结算" />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data: {
+    saveText: '你正在安全购物环境中，请放心购买',
+    title: '精选特卖',
+    totalAmount: '318',
+    promotion: '自营商品已享受新会员专享订单满38元免运费'
+  },
+  props: {
+    datas: {
+      defaut: []
+    }
+  }
+}
+</script>
+
+<style lang="less">
+.page-container {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .list-container {
+    background-color: #f5f5f5;
+    flex-direction: column;
+    width: 100%;
+    columns: 1;
+    flex: 1;
+    .item-head {
+      background-color: #d6d6d6;
+      flex-direction: row;
+      align-self: center;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      width: 100%;
+      .head-image {
+        width: 40px;
+        height: 40px;
+        margin-left: 16px;
+        margin-right: 16px;
+      }
+      .head-text {
+        font-size: 30px;
+        color: #242121;
+      }
+    }
+    .item-title {
+      background-color: #ffffff;
+      width: 100%;
+      padding-left: 32px;
+      padding-right: 32px;
+      align-self: center;
+      flex-direction: column;
+      .title-text-title {
+        padding-top: 16px;
+        padding-bottom: 16px;
+        font-size: 35px;
+        color: #a7a7a7;
+      }
+      .title-line {
+        width: 100%;
+        height: 1px;
+        background-color: #eeeeee;
+      }
+    }
+    .item-order {
+      background-color: #ffffff;
+      padding-top: 32px;
+      padding-bottom: 32px;
+      padding-right: 16px;
+      flex-direction: column;
+      width: 100%;
+      .order-top-wrap {
+        width: 100%;
+        flex-direction: row;
+        .order-image-wrap {
+          width: 25%;
+          justify-content: center;
+          image {
+            width: 75%;
+            height: 100%;
+          }
+        }
+        .order-details-wrap {
+          flex-direction: column;
+          width: 50%;
+          .order-text-title {
+            font-size: 35px;
+            color: #000000;
+            lines: 2;
+            text-overflow: ellipsis;
+          }
+          .order-text-brief {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            font-size: 25px;
+            color: #c7c2c2;
+            lines: 1;
+            text-overflow: ellipsis;
+          }
+          .order-text-size {
+            font-size: 25px;
+            color: #c7c2c2;
+          }
+        }
+        .order-price-wrap {
+          flex: 1;
+          flex-direction: column;
+          .order-text-price {
+            align-self: flex-end;
+            font-size: 35px;
+            color: #000000;
+          }
+          .order-text-oldprice {
+            align-self: flex-end;
+            font-size: 30px;
+            color: #c7c2c2;
+            text-decoration: line-through;
+          }
+        }
+      }
+      .order-end-wrap {
+        margin-top: 16px;
+        flex-direction: row;
+        .order-placeholder-1 {
+          width: 25%;
+          background-color: transparent;
+        }
+        .order-button {
+          width: 56px;
+          height: 56px;
+          font-size: 25px;
+          align-items: center;
+          justify-content: center;
+          background-color: #ffffff;
+          border-color: #a9a9a9;
+          border-width: 1px;
+        }
+        .order-placeholder-2 {
+          flex: 1;
+          background-color: transparent;
+        }
+        .order-image-delete {
+          align-self: center;
+          width: 32px;
+          height: 32px;
+          background-color: transparent;
+        }
+      }
+    }
+    .item-end {
+      background-color: #ffffff;
+      width: 100%;
+      padding-left: 32px;
+      padding-right: 32px;
+      flex-direction: column;
+      .end-line {
+        width: 100%;
+        height: 1px;
+        background-color: #eeeeee;
+      }
+      .end-text-amount {
+        padding-top: 32px;
+        padding-bottom: 32px;
+        align-self: flex-end;
+        font-size: 30px;
+        color: #a7a7a7;
+      }
+      .end-text-promotion {
+        padding-top: 16px;
+        padding-bottom: 16px;
+        font-size: 25px;
+        color: #a7a7a7;
+      }
+    }
+  }
+  .bottom-container {
+    flex-direction: column;
+    width: 100%;
+    padding: 32px;
+    align-items: center;
+    justify-content: center;
+    .bottom-text {
+      .bottom-span-describe {
+        color: #a9a9a9;
+        font-size: 40px;
+      }
+      .bottom-span-amount {
+        color: #d4237a;
+        font-size: 40px;
+      }
+    }
+    .bottom-button {
+      width: 100%;
+      padding: 20px;
+      margin-top: 32px;
+      background-color: #d4237a;
+      color: #ffffff;
+      font-size: 40px;
+      border-radius: 4px;
+    }
+  }
+}
+</style>

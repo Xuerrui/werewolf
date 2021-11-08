@@ -1,0 +1,84 @@
+<template>
+  <list class="list-container">
+    <list-item
+      type="tab"
+      for="{{labels}}"
+      class="item-tab"
+      onclick="onTabClick($idx)"
+      style="background-color: {{$item.isFocus ? '#ffffff' : 'transparent'}}"
+    >
+      <div class="tab-wrap">
+        <div
+          id="pink"
+          class="tab-column-view"
+          style="background-color: {{$item.isFocus ? '#dda0dd' : 'transparent'}}"
+        ></div>
+        <text
+          class="tab-text-title"
+          style="color: {{$item.isFocus ? '#000000' : '#808080'}}"
+          >{{ $item.title }}</text
+        >
+      </div>
+
+      <div class="tab-line-bottom" show="{{!$item.isFocus}}"></div>
+    </list-item>
+  </list>
+</template>
+
+<script>
+export default {
+  props: {
+    labels: {
+      default: []
+    }
+  },
+  onTabClick(index) {
+    this.labels.forEach((item, idx) => {
+      item.isFocus = index === idx
+    })
+    this.$emit('tabClick', { position: index })
+  }
+}
+</script>
+
+<style lang="less">
+.list-container {
+  width: 25%;
+  height: 100%;
+  background-color: #f5f5f5;
+  flex-direction: column;
+
+  .item-tab {
+    width: 100%;
+    height: 100px;
+    background-color: #7fffd4;
+    flex-direction: column;
+    .tab-wrap {
+      width: 100%;
+      height: 100%;
+      flex-direction: row;
+      .tab-column-view {
+        width: 12px;
+        height: 100%;
+      }
+      .tab-text-title {
+        width: 100%;
+        margin-left: 8px;
+        margin-right: 8px;
+        font-size: 35px;
+        align-items: center;
+        justify-content: center;
+        padding-top: 22px;
+        padding-bottom: 22px;
+        text-align: center;
+      }
+    }
+    .tab-line-bottom {
+      background-color: #808080;
+      width: 60%;
+      height: 1px;
+      align-self: center;
+    }
+  }
+}
+</style>

@@ -1,0 +1,108 @@
+<template>
+  <div class="page-container">
+    <div class="login-wrap">
+      <text class="login-text" onclick="onRegiste">注册</text>
+      <text class="login-text">|</text>
+      <text class="login-text" onclick="onSign">登录</text>
+    </div>
+
+    <div class="item-container">
+      <div class="item-wrap" for="{{datas.head.iconNames}}">
+        <image class="item-image" src="{{$item.icon}}"></image>
+        <text class="item-text-name">{{ $item.name }}</text>
+      </div>
+    </div>
+
+    <div class="column-wrap">
+      <text class="column-text-title">{{ datas.mySale.title }}</text>
+      <div class="item-container">
+        <div class="item-wrap" for="{{datas.mySale.iconNames}}">
+          <image class="item-image" src="{{$item.icon}}"></image>
+          <text class="item-text-name">{{ $item.name }}</text>
+        </div>
+      </div>
+    </div>
+
+    <div class="column-wrap">
+      <text class="column-text-title">{{ datas.myActivities.title }}</text>
+      <div class="item-container">
+        <div class="item-wrap" for="{{datas.myActivities.iconNames}}">
+          <image class="item-image" src="{{$item.icon}}"></image>
+          <text class="item-text-name">{{ $item.name }}</text>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { memberDatas } from '../../assets/js/memberData.js'
+
+export default {
+  private: {
+    datas: {}
+  },
+  onInit() {
+    this.datas = memberDatas
+  },
+  onRegiste() {},
+  onSign() {}
+}
+</script>
+
+<style lang="less">
+.page-container {
+  background-color: #f0f0eb;
+  width: 100%;
+  flex-direction: column;
+  .login-wrap {
+    width: 100%;
+    height: 20%;
+    align-items: center;
+    justify-content: center;
+    .login-text {
+      margin: 18px;
+      color: #000000;
+      font-size: 30px;
+    }
+  }
+  .item-container {
+    margin-bottom: 40px;
+    background-color: #ffffff;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    width: 100%;
+    justify-content: space-around;
+    align-content: center;
+
+    .item-wrap {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      .item-image {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 10px;
+      }
+      .item-text-name {
+        margin: 18px;
+        color: #000000;
+        font-size: 24px;
+      }
+    }
+  }
+  .column-wrap {
+    flex-direction: column;
+    width: 100%;
+
+    .column-text-title {
+      width: 100%;
+      background-color: #ffffff;
+      margin-bottom: 2px;
+      padding: 18px;
+      color: #000000;
+      font-size: 30px;
+    }
+  }
+}
+</style>
