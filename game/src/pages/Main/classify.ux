@@ -1,0 +1,51 @@
+<import name="classify-tab" src="./classifyTab.ux"></import>
+<import name="classify-item" src="./classifyItem.ux"></import>
+
+<template>
+  <div class="page-container">
+    <classify-tab ontab-click="onTabClick" labels="{{labels}}"></classify-tab>
+    <classify-item datas="{{datas}}"></classify-item>
+  </div>
+</template>
+
+<script>
+import { classifyLabels } from '../../assets/js/classifyData'
+import { classifyDatas } from '../../assets/js/classifyItemData'
+
+// 模拟fetch请求数据
+function callFetch(callback) {
+  setTimeout(function() {
+    callback(classifyDatas)
+  }, 500)
+}
+
+export default {
+  data: {
+    labels: classifyLabels,
+    datas: classifyDatas
+  },
+  onInit() {},
+  onTabClick(para) {
+    const selectedPosition = para.detail.position
+    console.log(`selectedPosition = ${selectedPosition}`)
+
+    callFetch(
+      function(resList) {
+        if (!resList) {
+          console.error(`数据请求错误`)
+        } else {
+          this.datas = resList
+        }
+      }.bind(this)
+    )
+  }
+}
+</script>
+
+<style lang="less">
+.page-container {
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+</style>

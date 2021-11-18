@@ -1,0 +1,141 @@
+<template>
+  <div class="page-container">
+    <list class="list-container">
+      <list-item class="item-head" type="head">
+        <image
+          class="head-image"
+          src="../../assets/images/shoppingcar.png"
+        ></image>
+        <text class="head-text">购物车空空如也</text>
+      </list-item>
+
+      <list-item class="item-title" type="title">
+        <text class="title-text">—— 猜你喜欢 ——</text>
+      </list-item>
+
+      <list-item
+        class="item-favorite"
+        type="favorite"
+        for="{{datas}}"
+        @click="onItemClick($item)"
+      >
+        <image class="favorite-image" src="{{$item.img}}"></image>
+
+        <div class="favorite-price-wrap">
+          <text class="favorite-text-price">¥{{ $item.price }}</text>
+          <text class="favorite-text-oldprice">¥{{ $item.oldPrice }}</text>
+          <text class="favorite-text-discount">{{ $item.discount }}折</text>
+        </div>
+
+        <text class="favorite-text-brief">{{ $item.brief }}</text>
+      </list-item>
+    </list>
+  </div>
+</template>
+
+<script>
+import router from '@system.router'
+
+export default {
+  props: {
+    datas: {
+      default: []
+    }
+  },
+  onItemClick(item) {
+    router.push({
+      uri: 'pages/Goods'
+    })
+  }
+}
+</script>
+
+<style lang="less">
+.page-container {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+
+  .list-container {
+    background-color: #f5f5f5;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    columns: 2;
+    .item-head {
+      background-color: #ffffff;
+      flex-direction: column;
+      column-span: 2;
+      align-items: center;
+      justify-content: center;
+      padding-top: 40px;
+      padding-bottom: 40px;
+      width: 100%;
+      .head-image {
+        width: 400px;
+        height: 400px;
+      }
+      .head-text {
+        margin-top: 60px;
+        font-size: 40px;
+        color: #000000;
+      }
+    }
+    .item-title {
+      background-color: #f5f5f5;
+      column-span: 2;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      .title-text {
+        padding-top: 40px;
+        padding-bottom: 32px;
+        font-size: 35px;
+        color: #000000;
+      }
+    }
+    .item-favorite {
+      background-color: #ffffff;
+      margin: 8px;
+      flex-direction: column;
+      .favorite-image {
+        width: 384px;
+        height: 512px;
+      }
+      .favorite-price-wrap {
+        padding: 8px;
+        flex-direction: row;
+        width: 100%;
+        align-content: center;
+        .favorite-text-price {
+          font-size: 35px;
+          color: #000000;
+        }
+        .favorite-text-oldprice {
+          flex: 1;
+          font-size: 30px;
+          color: #c7c2c2;
+          margin-left: 16px;
+          margin-right: 16px;
+          text-decoration: line-through;
+        }
+        .favorite-text-discount {
+          align-self: flex-end;
+          border-radius: 8px;
+          border-color: #ff0000;
+          border-width: 1px;
+          font-size: 30px;
+          padding-left: 8px;
+          padding-right: 8px;
+          color: #ff0000;
+        }
+      }
+      .favorite-text-brief {
+        margin-top: 60px;
+        font-size: 35px;
+        color: #000000;
+      }
+    }
+  }
+}
+</style>

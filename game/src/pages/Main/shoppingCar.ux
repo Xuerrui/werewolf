@@ -1,0 +1,41 @@
+<import name="car-empty" src="./carEmpty.ux"></import>
+<import name="car-full" src="./carFull.ux"></import>
+
+<template>
+  <div class="page-container">
+    <car-empty datas="{{favoriteDatas}}" if="{{!isFull}}"></car-empty>
+    <car-full datas="{{carDatas}}" if="{{isFull}}"></car-full>
+  </div>
+</template>
+
+<script>
+import { favoriteDatas } from '../../assets/js/favoriteData'
+import { carDatas } from '../../assets/js/carData'
+
+export default {
+  data: {
+    favoriteDatas: {},
+    carDatas: {}
+  },
+  props: {
+    isFull: {
+      default: false
+    }
+  },
+  onInit() {
+    this.favoriteDatas = favoriteDatas
+    this.carDatas = carDatas
+  }
+}
+</script>
+
+<style lang="less">
+.page-container {
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+}
+</style>
