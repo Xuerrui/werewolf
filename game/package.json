@@ -18,11 +18,17 @@
     "apex-ui": "latest",
     "axios": "^0.24.0",
     "axios-miniprogram-adapter": "^0.3.2",
+    "baidu-aip-sdk": "^4.15.4",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.1.1",
     "hap": "^2.1.1",
-    "jquery": "^3.6.0"
+    "jquery": "^3.6.0",
+    "net": "^1.0.2",
+    "require": "^2.4.20",
+    "stream": "^0.0.2"
   },
   "devDependencies": {
-    "@types/quickapp": "git+https://gitee.com/vivoquickapp/quickapp-types.git",
+    "@types/quickapp": "github:vivoquickapp/quickapp-types",
     "husky": "^4.3.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",
@@ -50,7 +56,7 @@
   },
   "keywords": [
     "快应用",
-    "商城"
+    "狼人杀"
   ],
   "browserslist": [
     "chrome 65"

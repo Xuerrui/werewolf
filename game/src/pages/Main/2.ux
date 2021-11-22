@@ -206,7 +206,7 @@ export default {
     voteLock: 1,
     pdie: 0, //判断此时预言家死亡，则start=天亮了时应该播报预言家行动后天亮
     url: 'http://8.142.124.20:8181',
-    eventName:'',
+    eventName:'ceshi',
     nameBackUp:'',
     roomall:[],
     talk: [],
@@ -1010,7 +1010,7 @@ let that = this
         if (that.die == 1) {
           that.lastspeech()
         }
-        that.eventName == ''
+
        },
       fail: function (data, code) {
         that.eventName = `stop fail, code=${code}, data=${data}`

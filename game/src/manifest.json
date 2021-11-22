@@ -1,10 +1,10 @@
 {
-  "package": "com.xuruiqi",
-  "name": "狼人杀",
-  "versionName": "1.0.1",
+  "package": "com.xuriqi6",
+  "name": "狼人杀客户端6",
+  "versionName": "2.0.2",
   "versionCode": 1,
-  "minPlatformVersion": 1070,
-  "icon": "/assets/images/logo.png",
+  "minPlatformVersion": 1079,
+  "icon": "/assets/image/logo.png",
   "deviceTypeList": [
     "phone"
   ],
@@ -13,9 +13,14 @@
       "name": "system.prompt"
     },
     {
+       "name": "system.prompt" 
+    },
+    { 
+      "name": "system.audio" 
+    },
+    {
       "name": "system.router"
     },
-  
     {
       "name": "system.shortcut"
     },

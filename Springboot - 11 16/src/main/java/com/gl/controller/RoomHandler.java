@@ -22,7 +22,7 @@ import java.util.Random;
 public class RoomHandler {
 
     static public int id = 0;
-    //不同人数发牌情况
+
     public String Cards[][] = {
             {},
             {},
@@ -39,12 +39,21 @@ public class RoomHandler {
             {"狼人","狼人","狼人","狼人","预言家","女巫","守卫","猎人","平民","平民","平民","平民"},
             {"狼人","狼人","狼人","狼人","预言家","女巫","守卫","猎人","平民","平民","平民","平民","平民"}
     };
+//    public String Cards6[] = {"狼人","狼人","预言家","平民","平民","平民"};
+//    public String Cards7[] = {"狼人","狼人","预言家","猎人","平民","平民","平民"};
+//    public String Cards8[] = {"狼人","狼人","狼人","预言家","女巫","守卫","平民","平民"};
+//    public String Cards9[] = {"狼人","狼人","狼人","预言家","女巫","守卫","平民","平民","平民"};
+//    public String Cards10[] = {"狼人","狼人","狼人","预言家","女巫","守卫","猎人","平民","平民","平民"};
+//    public String Cards11[] = {"狼人","狼人","狼人","狼人","预言家","女巫","守卫","猎人","平民","平民","平民"};
+//    public String Cards12[] = {"狼人","狼人","狼人","狼人","预言家","女巫","守卫","猎人","平民","平民","平民","平民"};
+//    public String Cards13[] = {"狼人","狼人","狼人","狼人","预言家","女巫","守卫","猎人","平民","平民","平民","平民","平民"};
+
     @Autowired
     private RoomRepotory roomRepotory;
     @Autowired
     private TalkRepotory talkRepotory;
 
-    //创建房间
+
     @PostMapping("/create")
     public String create(@RequestParam Map<String, String> room1){
         Room room = new Room();
@@ -63,7 +72,6 @@ public class RoomHandler {
         room.killvote = "";
         room.personnum = 0;
         room.predict = "";
-        room.guard = 0;
         System.out.println(room);
         Room result = roomRepotory.save(room);
         if (result!=null){
@@ -72,7 +80,6 @@ public class RoomHandler {
             return "error";
         }
     }
-    //加入房间
     @PostMapping("/join")
     public String join(@RequestParam Map<String, String> room1){
         Room room = new Room();
@@ -84,8 +91,6 @@ public class RoomHandler {
         room.vote = "";
         room.hnum = -1;
         room.predict = "";
-        room.guard = 0;
-        room.killvote = "";
 
         Room result = roomRepotory.save(room);
         //第一个room代表room的总信息,增加一个人数
@@ -168,16 +173,15 @@ public class RoomHandler {
             return "error";
         }
     }
-    //通过房间号和人名查找
+
     @GetMapping("/findByRH/{rname}/{hname}")
     public Room findByRH(@PathVariable("rname") Integer rname, @PathVariable("hname") String hname){
         Room room = new Room();
-        System.out.println(roomRepotory.findAllByRnameAndAndHname(rname, hname));
+        System.out.println("sdfasfadsf"+roomRepotory.findAllByRnameAndAndHname(rname, hname));
 
         return roomRepotory.findAllByRnameAndAndHname(rname, hname).isEmpty()?room:roomRepotory.findAllByRnameAndAndHname(rname, hname).get(0);
 
     }
-    //通过房间号和人的号码牌查找
     @GetMapping("/findByRHstart/{rname}/{hstart}")
     public Room findByRHstart(@PathVariable("rname") Integer rname, @PathVariable("hstart") Integer hstart){
         Room room = new Room();
@@ -187,25 +191,44 @@ public class RoomHandler {
 
     }
 
-    //通过id查找
+    @PostMapping("/save")
+    public String save(@RequestBody Room room){
+        Room result = roomRepotory.save(room);
+        if (result!=null){
+            return "success";
+        }else {
+            return "error";
+        }
+    }
+
     @GetMapping("/findById/{id}")
     public Room findById(@PathVariable("id") Integer id){
         return roomRepotory.findById(id).get();
 
     }
-    //通过房间号查找，得到的是第一行的信息
+
     @GetMapping("/findByName/{name}")
     public Room findByName(@PathVariable("name") Integer name){
         return roomRepotory.findAllByRname(name).get(0);
 
     }
-    //通过房间号查找，得到所有房间内信息
+
     @GetMapping("/findAllByRname/{name}")
     public List<Room> findAllByRname(@PathVariable("name") Integer rname){
         return roomRepotory.findAllByRname(rname);
 
     }
-    //守卫
+
+    @PutMapping("/update")
+    public String update(@RequestBody Room room){
+        Room result = roomRepotory.save(room);
+        if (result!=null){
+            return "success";
+        }else {
+            return "error";
+        }
+    }
+
     @GetMapping("/guard/{name}/{hname2}")
     public String guard(@PathVariable("name") String name, @PathVariable("hname2") String hname2){
 
@@ -326,32 +349,16 @@ public class RoomHandler {
                             }
                             if (roomtemp.rnum>6) {
                                 if(roomtemp.wolfnum == 0) {
-                                    System.out.println("好人胜利");
-
-                                    roomtemp.start = "好人胜利";
-                                    roomRepotory.save(roomtemp);
                                     return "好人胜利";
                                 }
                                 if(roomtemp.godnum == 0||room2.personnum == 0) {
-
-                                    roomtemp.start = "狼人胜利";
-                                    roomRepotory.save(roomtemp);
-                                    System.out.println("狼人胜利");
                                     return "狼人胜利";
                                 }
                             }
                             else if (roomtemp.wolfnum==roomtemp.count) {
-
-                                roomtemp.start = "狼人胜利";
-                                roomRepotory.save(roomtemp);
-                                System.out.println("狼人胜利");
                                 return "狼人胜利";
                             }
                             else if (roomtemp.wolfnum==0) {
-
-                                roomtemp.start = "好人胜利";
-                                roomRepotory.save(roomtemp);
-                                System.out.println("好人胜利");
                                 return "好人胜利";
                             }
                         }
@@ -399,10 +406,6 @@ public class RoomHandler {
         return "yes";
     }
 
-    //女巫
-
-    //猎人
-
     //直接读即可
     @GetMapping("/predict/{name}/{hname}/{hname2}")
     public String predict(@PathVariable("name") String name, @PathVariable("hname") String hname, @PathVariable("hname2") String hname2){
@@ -423,15 +426,13 @@ public class RoomHandler {
             roomtemp.start = "讨论";
         }
         talk(rname,"天亮了");
-        roomtemp.predict+=findByRH(rname, hname2).hname+":"+findByRH(rname, hname2).htype+";";
         roomRepotory.save(roomtemp);
         return "yes";
     }
-//讨论
+
     @PostMapping("/talk")
     public String talk(@RequestParam Map<String, String> talk1){
         Talk talk = new Talk();
-        System.out.println(talk1+"1111111111111111111111111111111111111111111111111111111");
         talk.rname = Integer.parseInt(talk1.get("rname"));
         talk.hname = talk1.get("hname");
         talk.content = talk1.get("content");
@@ -448,25 +449,25 @@ public class RoomHandler {
         }
 
         while (true) {
-            System.out.println("-----------------------------------------"+ roomtemp.whotalk);
-            if (findByRHstart(talk.rname,roomtemp.whotalk).die == 1) {
-                roomtemp.whotalk+=1;
+
+            if (findByRHstart(talk.rname,roomtemp.hstart).die == 1) {
+                roomtemp.hstart+=1;
                 //找到是否死亡
             }
             else {
                 break;
             }
-            if (roomtemp.whotalk>roomtemp.hnum){
-                roomtemp.whotalk = 1;
+            if (roomtemp.hstart>roomtemp.hnum){
                 roomtemp.whotalk = 1;
                 roomtemp.start = "投票";
+                break;
             }
         }
         roomRepotory.save(roomtemp);
 
         return "yes";
     }
-    //遗言
+
     @PostMapping("/lasttalk")
     public String lasttalk(@RequestParam Map<String, String> talk1){
         Talk talk = new Talk();
@@ -475,18 +476,9 @@ public class RoomHandler {
         talk.content = talk1.get("content");
         System.out.println(talk);
         talkRepotory.save(talk);
-
-        Room roomtemp = findAllByRname(talk.rname).get(0);
-        if (roomtemp.start.equals("天亮了")) {
-            roomtemp.start = "讨论";
-        }
-        if (roomtemp.start.equals("天黑了")) {
-            roomtemp.start = "狼人";
-        }
-        roomRepotory.save(roomtemp);
         return "yes";
     }
-    //发送如天黑了等宣言文字
+    //如天黑了等宣言文字
     public String talk(Integer rname,String str){
         Talk talk = new Talk();
         talk.rname = rname;
@@ -496,7 +488,7 @@ public class RoomHandler {
         talkRepotory.save(talk);
         return "yes";
     }
-    //投票
+
     @GetMapping("/vote/{name}/{hname}/{hname2}")
     public String vote(@PathVariable("name") String name, @PathVariable("hname") String hname, @PathVariable("hname2") String hname2){
         //获得第一个元素
@@ -581,27 +573,16 @@ public class RoomHandler {
                             roomtemp.count--;
                             if (roomtemp.rnum>6) {
                                 if(roomtemp.wolfnum == 0) {
-                                    roomtemp.start = "好人胜利";
-                                    roomRepotory.save(roomtemp);
                                     return "好人胜利";
                                 }
                                 if(roomtemp.godnum == 0||room2.personnum == 0) {
-
-                                    roomtemp.start = "狼人胜利";
-                                    roomRepotory.save(roomtemp);
                                     return "狼人胜利";
                                 }
                             }
                             else if (roomtemp.wolfnum==roomtemp.count) {
-
-                                roomtemp.start = "狼人胜利";
-                                roomRepotory.save(roomtemp);
                                 return "狼人胜利";
                             }
                             else if (roomtemp.wolfnum==0) {
-
-                                roomtemp.start = "好人胜利";
-                                roomRepotory.save(roomtemp);
                                 return "好人胜利";
                             }
                         }
