@@ -5,13 +5,13 @@
 ![image](https://user-images.githubusercontent.com/39187594/146669501-4f0f371b-4c58-45ae-ad29-1765e47f2030.png)<br>
 ![image](https://user-images.githubusercontent.com/39187594/146669496-91ef64a5-615a-4d9d-ad91-c1aa27d2d284.png)
 
-## game文件夹为快应用做的界面
-## springboot为后端代码
-## 数据库结构为
-### 1、一个room表<br>
+#### game文件夹为快应用做的界面
+#### springboot为后端代码
+#### 数据库结构为
+##### 1、一个room表<br>
 ![image](https://user-images.githubusercontent.com/39187594/146669332-cbc03fdb-2ada-4cf1-8646-1a3343ea709d.png)
 
-### 2、一个talk表<br>
+##### 2、一个talk表<br>
 ![image](https://user-images.githubusercontent.com/39187594/146669341-f0b2b3a3-fedc-4872-a56e-902521af8407.png)
 项目成果
 ## 1、实现界面
@@ -27,21 +27,30 @@
  ![image](https://user-images.githubusercontent.com/39187594/146669535-cbc86183-f92a-479a-bc41-36e177416e03.png)
  
 ### 1.4、发言页面：
-点击开始，录音并语音识别，点击结束发送
- 
+点击开始，录音并语音识别，点击结束发送<br>
+ ![image](https://user-images.githubusercontent.com/39187594/146669761-cbeb4c98-c125-491e-aad0-b5c5090f589f.png)
+
 ### 1.5、投票：
-点击头像投票，投票数够进入下一阶段
- 
+点击头像投票，投票数够进入下一阶段<br>
+ ![image](https://user-images.githubusercontent.com/39187594/146669765-62eb35d0-afd6-464d-9ca5-f9148482686c.png)
+
 ### 1.6、胜利：
-当只剩狼或只剩好人，游戏结束
+当只剩狼或只剩好人，游戏结束<br>
+![image](https://user-images.githubusercontent.com/39187594/146669770-683bac8e-ada1-46dd-a16c-0c261b5ebecc.png)
+
   ## 2游戏扩展（狼羊杀-儿童版）
 与上面一样的游戏流程，更换了介绍语音和图片，游戏中扮演小羊进行推理
+
 ### 2.1、创建房间和加入房间：
-输入房间号和名字创建加入房间
- 
+输入房间号和名字创建加入房间<br>
+ ![image](https://user-images.githubusercontent.com/39187594/146669792-28e041df-5b06-4de2-b8af-718212338d87.png)
+
 ### 2.2、狼人夜晚投票：
-点击头像投票，投票结束后进入下一阶段
-  
+点击头像投票，投票结束后进入下一阶段<br>
+![image](https://user-images.githubusercontent.com/39187594/146669795-644de741-66f4-45bd-afc6-5a4992caafdc.png)
+
+  ![Uploading image.png…]()
+
 ### 2.3、预言家预言：
 点击头像预言，预言后，身份显示在预言栏，进入下一回合<br>
  ![image](https://user-images.githubusercontent.com/39187594/146669558-5559e31e-4c27-4b6b-8869-1b6b19f05bcd.png)
