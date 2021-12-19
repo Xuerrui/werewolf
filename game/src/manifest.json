@@ -1,6 +1,6 @@
 {
-  "package": "com.xuriqi6",
-  "name": "狼人杀客户端6",
+  "package": "com.xuriqi12",
+  "name": "狼人杀法官助手12",
   "versionName": "2.0.2",
   "versionCode": 1,
   "minPlatformVersion": 1079,
@@ -38,6 +38,9 @@
     },
     {
       "name": "system.fetch"
+    },
+    {
+      "name": "system.vibrator"
     }
   ],
   "permissions": [
@@ -56,7 +59,13 @@
       "pages/Main": {
         "component": "index"
       },
-      "pages/Goods": {
+      "pages/Game": {
+        "component": "index"
+      },
+      "pages/Mainsheep": {
+        "component": "index"
+      },
+      "pages/Gamesheep": {
         "component": "index"
       }
     }
@@ -70,7 +79,14 @@
         "titleBarText": "首页",
         "menu": true
       },
-      "pages/Goods": {
+      "pages/Game": {
+        "titleBar": false
+      },
+      "pages/Mainsheep": {
+        "titleBarText": "首页",
+        "menu": true
+      },
+      "pages/Gamesheep": {
         "titleBar": false
       }
     }

@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.dnd.DropTarget;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class RoomHandler {
     //创建房间
     @PostMapping("/create")
     public String create(@RequestParam Map<String, String> room1){
+
         Room room = new Room();
         room.hnum = Integer.parseInt(room1.get("hnum"));
         room.hname = room1.get("hname");
@@ -64,6 +67,20 @@ public class RoomHandler {
         room.personnum = 0;
         room.predict = "";
         room.guard = 0;
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        room.time = timestamp;
+        List<Room> roomList = roomRepotory.findAll();
+        for(Room r: roomList) {
+            if (timestamp.getTime() - r.time.getTime()>86400000) {
+                roomRepotory.deleteById(r.id);
+            }
+        }
+        List<Talk> talkList = talkRepotory.findAll();
+        for(Talk t: talkList) {
+            if (timestamp.getTime() - t.time.getTime()>86400000) {
+                talkRepotory.deleteById(t.id);
+            }
+        }
         System.out.println(room);
         Room result = roomRepotory.save(room);
         if (result!=null){
@@ -86,7 +103,8 @@ public class RoomHandler {
         room.predict = "";
         room.guard = 0;
         room.killvote = "";
-
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        room.time = timestamp;
         Room result = roomRepotory.save(room);
         //第一个room代表room的总信息,增加一个人数
         Room roomtemp = roomRepotory.findAllByRname(room.rname).get(0);
@@ -306,9 +324,17 @@ public class RoomHandler {
                         if(room2.hname.equals(killedOne)) {
 
                             room2.die = 1;
+                            int temp = roomtemp.whotalk;
+                            if (roomtemp.whotalk == room2.hstart) {
+                                while (findByRHstart(room2.rname,roomtemp.whotalk).die == 1) {
+
+                                    roomtemp.whotalk++;
+                                }
+                            }
                             //胜利判定
                             if (room2.guard == 1) {
                                 room2.die = 0;
+                                roomtemp.whotalk = temp;
                                 g=1;
                                 //return "玩家被守护";
                             }
@@ -435,6 +461,8 @@ public class RoomHandler {
         talk.rname = Integer.parseInt(talk1.get("rname"));
         talk.hname = talk1.get("hname");
         talk.content = talk1.get("content");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        talk.time = timestamp;
         System.out.println(talk);
         talkRepotory.save(talk);
 //        TalkHandler th = new TalkHandler();
@@ -444,7 +472,6 @@ public class RoomHandler {
         if (roomtemp.whotalk>roomtemp.hnum) {
             roomtemp.whotalk = 1;
             roomtemp.start = "投票";
-            return "yes";
         }
 
         while (true) {
@@ -473,6 +500,8 @@ public class RoomHandler {
         talk.rname = Integer.parseInt(talk1.get("rname"));
         talk.hname = talk1.get("hname")+"遗言";
         talk.content = talk1.get("content");
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        talk.time = timestamp;
         System.out.println(talk);
         talkRepotory.save(talk);
 
@@ -489,6 +518,8 @@ public class RoomHandler {
     //发送如天黑了等宣言文字
     public String talk(Integer rname,String str){
         Talk talk = new Talk();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        talk.time = timestamp;
         talk.rname = rname;
         talk.hname = "";
         talk.content = str;
@@ -568,6 +599,12 @@ public class RoomHandler {
                     for(Room room2 : roomdata) {
                         if(room2.hname.equals(killedOne)) {
                             room2.die = 1;
+                            if (roomtemp.whotalk == room2.hstart) {
+                                while (findByRHstart(room2.rname,roomtemp.whotalk).die == 1) {
+
+                                    roomtemp.whotalk++;
+                                }
+                            }
                             //胜利判定
                             if (room2.htype.equals("狼人") ) {
                                 roomtemp.wolfnum--;

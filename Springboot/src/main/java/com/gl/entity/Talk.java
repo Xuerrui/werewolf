@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.sql.Timestamp;
 
 @Entity
 @Data
@@ -16,5 +17,6 @@ public class Talk {
     public Integer rname;
     public String hname;
     public String content;
+    public Timestamp time;
 
 }

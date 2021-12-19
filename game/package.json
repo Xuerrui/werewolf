@@ -28,7 +28,7 @@
     "stream": "^0.0.2"
   },
   "devDependencies": {
-    "@types/quickapp": "github:vivoquickapp/quickapp-types",
+    "@types/quickapp": "npm:quickapp-interface@^1.0.0",
     "husky": "^4.3.0",
     "less": "^3.9.0",
     "less-loader": "^4.1.0",

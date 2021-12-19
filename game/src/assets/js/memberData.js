@@ -24,7 +24,7 @@ export const memberDatas = {
     title: '我的特卖',
     iconNames: [
       {
-        icon: '../../assets/images/goods_collection.png',
+        icon: '../../assets/images/Game_collection.png',
         name: '商品收藏'
       },
       {
@@ -45,7 +45,7 @@ export const memberDatas = {
     title: '我的活动',
     iconNames: [
       {
-        icon: '../../assets/images/quality_goods.png',
+        icon: '../../assets/images/quality_Game.png',
         name: '百元好货'
       },
       {

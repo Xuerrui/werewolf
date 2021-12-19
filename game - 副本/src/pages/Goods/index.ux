@@ -1,0 +1,1276 @@
+<import name="my-avatar" src="apex-ui/components/avatar/index"></import>
+<template>
+  <div class="page-container">
+
+
+    <!-- ================================================房间信息==================================================== -->
+
+    <div class="roominfo" style="height:5%;flex-wrap:wrap;">
+        <a if="voiceLock == 0" style="background-color: #4286f5; font-size: 20px; color: #ffffff;" onclick="voiceUnlockFun()">语音</a>
+        <a if="voiceLock == 0" style="background-color: #ff0000; font-size: 20px; color: #ffffff;" onclick="voiceUnlockFun()">关</a>
+        
+        <a if="voiceLock == 1" style="background-color: #20c200; font-size: 20px; color: #ffffff;" onclick="voiceLockFun()">开</a>
+        <a if="voiceLock == 1" style="background-color: #4286f5; font-size: 20px; color: #ffffff;" onclick="voiceLockFun()">语音</a>
+        <text style="margin-left: 10px;">房间:{{rname}}</text>
+        <text style="margin-left: 10px;">名字:{{hname}}</text>
+        <text style="margin-left: 10px;">身份:{{htype}}</text>
+        <text style="margin-left: 10px;">号码:{{hstart}}</text>
+    </div>
+    <!-- 预言家语言栏 -->
+    <div class="roominfo" if="htype=='预言家'" style="height:7%;flex-wrap:wrap;">
+        <text style="margin-left: 10px;font-size:20px">{{predict}}</text>
+    </div>
+    
+    <!-- 女巫用药栏 -->
+    <!-- <div class="roominfo" if="htype=='女巫'" style="height:5%;flex-wrap:wrap;">
+        <text style="margin-left: 10px;">房间:{{rname}}</text>
+    </div> -->
+
+
+
+
+
+
+    <div style="height:1px;width:100%;background-color:#808080;">
+    </div>
+    <!-- =============================操作部分================================ -->
+    <div class="opertion" style="height:43%;">
+      <!-- 开始发言 -->
+      <!-- <div if="1">
+        <div>
+          <a class="btn" style="text-align:center;" onclick="speech()">发言</a>
+        </div>
+      </div> -->
+      <!-- 胜利结算 -->
+      <div if="start=='好人胜利'">
+        <image src="../../assets/image/好人胜利.png" style="width:100%;height:100%;"></image>
+      </div>
+      <div elif="start=='狼人胜利'">
+        <image src="../../assets/image/狼人胜利.png" style="width:100%;height:100%;"></image>
+      </div>
+      <div elif="die2==1">
+        <image src="../../assets/image/死亡.png" style="width:100%;height:100%;"></image>
+      </div>
+
+
+      <!-- 狼人杀人操作 -->
+      <div elif="start=='狼人'&&htype=='狼人'&&killLock==1" class="btnitem">
+        <div onclick="wolfvote($item.hname)" class="btnS"  for="roomall" if="$item.die==0" style="flex-wrap:wrap;text-align:center;">
+            <image src="{{getUrl2($item.hstart)}}" style="height:80%;width:100%;">
+            </image>
+            <text style="height:20%;width:100%;text-align:center;font-size:25">{{$item.hstart}}:{{$item.hname}}</text>
+        </div>
+      </div>
+
+
+      <!-- 预言家预言操作 -->
+      <div elif="start=='预言家'&&htype=='预言家'&&predictLock==1" class="btnitem">
+        <div onclick="funpredict($item.hname)" class="btnS"  for="roomall" if="$item.die==0" style="flex-wrap:wrap;text-align:center;">
+            <image src="{{getUrl2($item.hstart)}}" style="height:80%;width:100%;">
+            </image>
+            <text style="height:20%;width:100%;text-align:center;font-size:25">{{$item.hstart}}:{{$item.hname}}</text>
+        </div>
+      </div>
+
+
+      <!-- 遗言1 -->
+      <div elif="start=='天亮了'&&whodie==hname&&lastspeechLock==1" style="flex-wrap:wrap;align-items: center;flex-direction: column;">
+          <div class='event-input' style="height:60%">
+             <textarea style="width:90%" onchange="updateValue">{{eventName}}</textarea>
+          </div>
+          <div>
+            <a class="btn" if="talkstart==0" style="text-align:center;" ontouchend="startAsr">开始</a>
+            <a class="btn" elif="talkstart==1" style="text-align:center;" ontouchend="endAsr">结束</a>
+          </div> 
+      </div>
+
+
+      <!-- 发言 -->
+      <div elif="start=='讨论'&&whotalk==hstart&&speechLock==1" style="flex-wrap:wrap;align-items: center;flex-direction: column;">
+          <div class='event-input' style="height:60%">
+             <textarea style="width:90%" onchange="updateValue">{{eventName}}</textarea>
+          </div>
+          <div>
+            <a class="btn" if="talkstart==0" style="text-align:center;" ontouchend="startAsr">开始</a>
+            <a class="btn" elif="talkstart==1" style="text-align:center;" ontouchend="endAsr">结束</a>
+          </div> 
+      </div>
+
+
+      <!-- 投票 -->
+      <div elif="start=='投票'&&voteLock==1" class="btnitem">
+        <div onclick="vote($item.hname)" class="btnS"  for="roomall" if="$item.die==0" style="flex-wrap:wrap;text-align:center;">
+          <!-- <a > -->
+            <image src="{{getUrl2($item.hstart)}}" style="height:80%;width:100%;">
+            </image>
+            <text style="height:20%;width:100%;text-align:center;font-size:25">{{$item.hstart}}:{{$item.hname}}</text>
+          <!-- </a> -->
+        </div>
+      </div>
+
+
+      <!-- 遗言2 -->
+      <div elif="start=='天黑了'&&whodie==hname&&lastspeechLock==1" style="flex-wrap:wrap;align-items: center;flex-direction: column;">
+          <div class='event-input' style="height:60%">
+             <textarea style="width:90%" onchange="updateValue">{{eventName}}</textarea>
+          </div>
+          <div>
+            <a class="btn" if="talkstart==0" style="text-align:center;" ontouchend="startAsr">开始</a>
+            <a class="btn" elif="talkstart==1" style="text-align:center;" ontouchend="endAsr">结束</a>
+          </div> 
+      </div>
+
+
+      <!-- 动画 -->
+
+
+      <!-- 白天 -->
+      <div elif="day==1">
+        <image src="../../assets/image/白天.png" style="width:100%;height:100%;">白天</image>
+      </div>
+      <div else="day==0">
+        <image src="../../assets/image/黑夜.png" style="width:100%;height:100%;">黑夜</image>
+      </div>
+    </div>
+
+
+
+
+
+    <div style="height:1px;width:100%;background-color:#808080;"></div>
+    <!-- ============================================对话页面讨论列表===================================================== -->
+    <div class = "process" style="height:50%;">
+      <list class="page-container" onscrollbottom="refresh()">
+
+        <!-- 聊天列表 -->
+        <list-item type="product" class="item-product" for="talk">
+          <div class="product-text-wrap">
+            <text class="product-text-name" if="{{$item.hname != ''&&$item.hname != null}}">{{$item.hname+'发言:'}}</text>
+            <text class="product-text-name">{{$item.content}}</text>
+          </div>
+        </list-item>
+
+        <!-- 加载更多 -->
+        <list-item type="loadStatus" class="load-status">
+          <progress type="circular" show="{{hasMoreData}}"></progress>
+          <text show="{{hasMoreData}}">加载更多</text>
+          <text show="{{!hasMoreData}}">没有更多了~</text>
+        </list-item>
+      </list>
+    </div>
+  </div>
+</template>
+
+
+<script>
+// import asr from '@service.asr'
+import router from '@system.router'
+import fetch from '@system.fetch'
+import vibrator from '@system.vibrator'
+import audio from '@system.audio'
+export default {
+  public: {
+    rname: 8080,
+    round: 1,
+    day: 0, //0代表黑夜，1代表白天
+    start: '狼人', //游戏阶段
+    hname: 'WC',
+    htype: '狼人',
+    hstart: 0, //发到的号码牌
+    predict: '', //预言家预测
+    hnum: '1',
+    hasMoreData: 1, //下拉talk
+    talkstart: 0,//开始结束talk
+    whotalk: 1, //开始说话的人
+    whodie:'', //死去的人，后续需要whodie+die一起判断
+    die: 0, //是否死亡
+    die2: 0,//是否发表完遗言
+    scale: '',
+    
+    audioSrc:'',
+    voiceLock: 0,
+    //audio锁子
+    audioTianhei: 1,//遗言2轮
+    audioLangren: 1,
+    audioYuyanjia: 1,
+    audioTianliang: 1,
+    audioTaolun: 1,
+    audioToupiao: 1,
+    //行动锁
+    killLock: 1,
+    predictLock: 1,
+    lastspeechLock: 1,
+    speechLock: 1,
+    voteLock: 1,
+    pdie: 0, //判断此时预言家死亡，则start=天亮了时应该播报预言家行动后天亮
+    url: 'http://8.142.124.20:8181',
+    eventName:'ceshi',
+    nameBackUp:'',
+    roomall:[],
+    talk: [],
+  },
+
+  
+  onInit() {
+
+
+//初始化Asr()---------------------------------------------------------------------
+
+      // this.initAsr()
+
+//获得讨论列表----------------------------------------------------------------------------------------------
+      
+      fetch.fetch({
+        url: this.url+'/talk/findByName/'+this.rname,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        console.log(res)
+        this.talk = JSON.parse(res.data.data)
+      })
+      .catch(success => {
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+
+//获得自己的身份--------------------------------------------------------
+
+      fetch.fetch({
+        url: this.url+'/room/findByRH/'+this.rname+'/'+this.hname,
+        method: 'get',
+        responseType: 'json',
+      })
+      .then(res => {
+        // console.log(res)
+        this.htype = res.data.data.htype
+        this.hnum = res.data.data.hnum
+        this.hstart = res.data.data.hstart
+        this.die = res.data.data.die
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+// 获得所有信息---------------------------------------------------------------
+      fetch.fetch({
+        url: this.url+'/room/findAllByRname/'+this.rname,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        this.roomall = JSON.parse(res.data.data)
+        this.start = this.roomall[0].start
+        this.whotalk = this.roomall[0].whotalk
+        this.predict = this.roomall[0].predict
+        this.whodie = this.roomall[0].whodie
+        if(this.hname == this.roomall[0].hname){
+          this.voiceLock = 1
+        }
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+
+//wait阶段，循环检索当前状态-------------------------------------------------------------------------
+      if (this.htype == "狼人") {
+          this.wolfWait()
+      }
+      if (this.htype == "预言家") {
+          this.prophetWait()
+      }
+      if (this.htype == "女巫") {
+          this.witchWait()
+      }
+      if (this.htype == "猎人") {
+          this.huntsmanWait()
+      }
+      if (this.htype == "守卫") {
+          this.guardWait()
+      }
+      if (this.htype == "平民") {
+          this.humanWait()
+      }
+
+
+
+  },
+
+
+// textToAudio(content){
+  
+//   texttoaudio.speak({
+//     lang: 'zh_CN',
+//     content: content,
+//     // content: '天，黑了，狼人开始行动了',
+//     pitch: 0.01,
+//     rate: 0.5,
+//     success: function(data) {
+//       console.log(`handling success, utteranceId = ${data.utteranceId}`)
+//     },
+//     fail: function(data, code) {
+//       console.log(`handling fail, code = ${code}`)
+//     }
+//   })
+// },
+
+
+//WAIT函数--等待各个阶段的操作
+
+//狼人等待
+  wolfWait() {
+    let that = this
+      setTimeout(function wWait() {
+      //获得讨论列表----------------------------------------------------------------------------------------------
+      
+      // fetch.fetch({
+      //   url: that.url+'/talk/findByName/'+that.rname,
+      //   method: 'get',
+      //   responseType: 'text',
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   that.talk = JSON.parse(res.data.data)
+      // })
+      // .catch(success => {
+      // })
+      // .catch(error => {
+      //   console.log(that.data)
+      // })
+        
+        //获得自己信息--------------------------------------------------------
+
+      fetch.fetch({
+        url: that.url+'/room/findByRH/'+that.rname+'/'+that.hname,
+        method: 'get',
+        responseType: 'json',
+      })
+      .then(res => {
+        // console.log(res)
+        that.htype = res.data.data.htype
+        that.hnum = res.data.data.hnum
+        that.hstart = res.data.data.hstart
+        if(that.start == '讨论'||that.start == '天亮了') {
+          that.die = res.data.data.die
+        }
+        if(that.start == '天黑了'||that.start == '狼人') {
+          that.die = res.data.data.die
+      
+        }    
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+
+// 获得所有信息---------------------------------------------------------------
+      fetch.fetch({
+        url: that.url+'/room/findAllByRname/'+that.rname,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        that.roomall = JSON.parse(res.data.data)
+        that.start = that.roomall[0].start
+        that.whotalk = that.roomall[0].whotalk
+        that.predict = that.roomall[0].predict
+        that.whodie = that.roomall[0].whodie
+
+        //查看预言家die不die
+        for (var room1 in that.roomall) {
+          if (room1.die == 1&&room1.htype == '预言家'){
+            that.pdie = 1
+          }
+        }
+
+        //6个人模式
+        if(that.start == '狼人'&&that.audioLangren == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 0
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.textToAudio('天黑请闭眼，狼人请睁眼。狼人开始行动了')
+           that.day = 0
+        }
+
+        
+        if(that.start == '预言家'&&that.audioYuyanjia == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 0
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          console.log('播放预言家')
+          that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')
+        }
+        if(that.start == '天亮了'&&that.audioTianliang == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 0
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          if(that.pdie == 1) {
+            that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')//播报预言家4秒再进入
+            setTimeout(function(){
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
+              that.day = 1
+              // that.pdie = 0
+            },4000)
+          }
+          else {
+
+            that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
+            that.day = 1
+          }
+        }
+        if(that.start == '讨论'&&that.audioTaolun == 1) {
+          that.audioTaolun = 0
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          if(that.pdie == 1) {
+            if(that.whodie == '') {
+              that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
+              setTimeout(function(){
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上是平安夜')
+              that.day = 1
+              that.textToAudio('请按顺序开始讨论')
+              // that.pdie = 0
+            },4000)
+            }
+            else {
+              that.textToAudio('请按顺序开始讨论')
+            }
+          }
+          else {
+            if(that.whodie == '') {
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上是平安夜,请按顺序开始讨论')
+              that.day = 1
+              // that.pdie = 0
+            }
+            else {
+              that.textToAudio('请按顺序开始讨论')
+            }
+          }
+        }
+        if(that.start == '投票'&&that.audioToupiao == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 0
+          that.textToAudio('讨论完毕请开始投票')
+        }
+        
+        console.log('播天黑了')
+        console.log(that.start)
+        console.log(that.audioTianhei)
+        
+        if(that.start == '天黑了'&&that.audioTianhei == 1) {
+          that.audioTianhei = 0
+          that.audioToupiao = 1
+          console.log('请'+that.whodie+'发表遗言')
+          that.textToAudio('请'+that.whodie+'发表遗言')
+        }
+
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+          that.wolfWait()
+        }, 3000)
+      console.log("akdjfklsjadlkjf")
+      
+  },
+//狼人等待函数结束-----------------------------
+
+
+
+
+//预言家等待-----------------------------------------------------------------------------------------------------
+  prophetWait() {
+    let that = this
+      setTimeout(function wWait() {
+      //获得讨论列表----------------------------------------------------------------------------------------------
+      
+      // fetch.fetch({
+      //   url: that.url+'/talk/findByName/'+that.rname,
+      //   method: 'get',
+      //   responseType: 'text',
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   that.talk = JSON.parse(res.data.data)
+      // })
+      // .catch(success => {
+      // })
+      // .catch(error => {
+      //   console.log(that.data)
+      // })
+        
+        //获得自己信息--------------------------------------------------------
+
+      fetch.fetch({
+        url: that.url+'/room/findByRH/'+that.rname+'/'+that.hname,
+        method: 'get',
+        responseType: 'json',
+      })
+      .then(res => {
+        // console.log(res)
+        that.htype = res.data.data.htype
+        that.hnum = res.data.data.hnum
+        that.hstart = res.data.data.hstart
+        if(that.start == '讨论'||that.start == '天亮了') {
+          that.die = res.data.data.die
+        }
+        if(that.start == '天黑了'||that.start == '狼人') {
+          that.die = res.data.data.die
+      
+        }    
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+
+// 获得所有信息---------------------------------------------------------------
+      fetch.fetch({
+        url: that.url+'/room/findAllByRname/'+that.rname,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        that.roomall = JSON.parse(res.data.data)
+        that.start = that.roomall[0].start
+        that.whotalk = that.roomall[0].whotalk
+        that.predict = that.roomall[0].predict
+        that.whodie = that.roomall[0].whodie
+
+        //查看预言家die不die
+        for (var room1 in that.roomall) {
+          if (room1.die == 1&&room1.htype == '预言家'){
+            that.pdie = 1
+          }
+        }
+
+        //6个人模式
+        if(that.start == '狼人'&&that.audioLangren == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 0
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.textToAudio('天黑请闭眼，狼人请睁眼。狼人开始行动了')
+           that.day = 0
+        }
+
+        
+        if(that.start == '预言家'&&that.audioYuyanjia == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 0
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          console.log('播放预言家')
+          that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')
+        }
+        if(that.start == '天亮了'&&that.audioTianliang == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 0
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          if(that.pdie == 1) {
+            that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')//播报预言家4秒再进入
+            setTimeout(function(){
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
+              that.day = 1
+              // that.pdie = 0
+            },4000)
+          }
+          else {
+
+            that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
+            that.day = 1
+          }
+        }
+        if(that.start == '讨论'&&that.audioTaolun == 1) {
+          that.audioTaolun = 0
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          if(that.pdie == 1) {
+            if(that.whodie == '') {
+              that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
+              setTimeout(function(){
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上是平安夜')
+              that.day = 1
+              that.textToAudio('请按顺序开始讨论')
+              // that.pdie = 0
+            },4000)
+            }
+            else {
+              that.textToAudio('请按顺序开始讨论')
+            }
+          }
+          else {
+            if(that.whodie == '') {
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上是平安夜,请按顺序开始讨论')
+              that.day = 1
+              // that.pdie = 0
+            }
+            else {
+              that.textToAudio('请按顺序开始讨论')
+            }
+          }
+        }
+        if(that.start == '投票'&&that.audioToupiao == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 0
+          that.textToAudio('讨论完毕请开始投票')
+        }
+        
+        console.log('播天黑了')
+        console.log(that.start)
+        console.log(that.audioTianhei)
+        
+        if(that.start == '天黑了'&&that.audioTianhei == 1) {
+          that.audioTianhei = 0
+          that.audioToupiao = 1
+          console.log('请'+that.whodie+'发表遗言')
+          that.textToAudio('请'+that.whodie+'发表遗言')
+        }
+
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+          that.prophetWait()
+        }, 3000)
+      console.log("akdjfklsjadlkjf")
+  },
+//预言家等待结束-----------------------------------------------------------------------------------------------------
+
+
+//平民等待-----------------------------------------------------------------------------------------------------
+  humanWait() {
+    let that = this
+      setTimeout(function wWait() {
+      //获得讨论列表----------------------------------------------------------------------------------------------
+      
+      // fetch.fetch({
+      //   url: that.url+'/talk/findByName/'+that.rname,
+      //   method: 'get',
+      //   responseType: 'text',
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   that.talk = JSON.parse(res.data.data)
+      // })
+      // .catch(success => {
+      // })
+      // .catch(error => {
+      //   console.log(that.data)
+      // })
+        
+        //获得自己信息--------------------------------------------------------
+
+      fetch.fetch({
+        url: that.url+'/room/findByRH/'+that.rname+'/'+that.hname,
+        method: 'get',
+        responseType: 'json',
+      })
+      .then(res => {
+        // console.log(res)
+        that.htype = res.data.data.htype
+        that.hnum = res.data.data.hnum
+        that.hstart = res.data.data.hstart
+        if(that.start == '讨论'||that.start == '天亮了') {
+          that.die = res.data.data.die
+        }
+        if(that.start == '天黑了'||that.start == '狼人') {
+          that.die = res.data.data.die
+      
+        }    
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+
+// 获得所有信息---------------------------------------------------------------
+      fetch.fetch({
+        url: that.url+'/room/findAllByRname/'+that.rname,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        that.roomall = JSON.parse(res.data.data)
+        that.start = that.roomall[0].start
+        that.whotalk = that.roomall[0].whotalk
+        that.predict = that.roomall[0].predict
+        that.whodie = that.roomall[0].whodie
+
+        //查看预言家die不die
+        for (var room1 in that.roomall) {
+          if (room1.die == 1&&room1.htype == '预言家'){
+            that.pdie = 1
+          }
+        }
+
+        //6个人模式
+        if(that.start == '狼人'&&that.audioLangren == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 0
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.textToAudio('天黑请闭眼，狼人请睁眼。狼人开始行动了')
+           that.day = 0
+        }
+
+        
+        if(that.start == '预言家'&&that.audioYuyanjia == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 0
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          console.log('播放预言家')
+          that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')
+        }
+        if(that.start == '天亮了'&&that.audioTianliang == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 0
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          if(that.pdie == 1) {
+            that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')//播报预言家4秒再进入
+            setTimeout(function(){
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
+              that.day = 1
+              // that.pdie = 0
+            },4000)
+          }
+          else {
+
+            that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
+            that.day = 1
+          }
+        }
+        if(that.start == '讨论'&&that.audioTaolun == 1) {
+          that.audioTaolun = 0
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          if(that.pdie == 1) {
+            if(that.whodie == '') {
+              that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
+              setTimeout(function(){
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上是平安夜')
+              that.day = 1
+              that.textToAudio('请按顺序开始讨论')
+              // that.pdie = 0
+            },4000)
+            }
+            else {
+              that.textToAudio('请按顺序开始讨论')
+            }
+          }
+          else {
+            if(that.whodie == '') {
+              that.textToAudio('预言家请闭眼，天亮了，昨天晚上是平安夜,请按顺序开始讨论')
+              that.day = 1
+              // that.pdie = 0
+            }
+            else {
+              that.textToAudio('请按顺序开始讨论')
+            }
+          }
+        }
+        if(that.start == '投票'&&that.audioToupiao == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 0
+          that.textToAudio('讨论完毕请开始投票')
+        }
+        
+        console.log('播天黑了')
+        console.log(that.start)
+        console.log(that.audioTianhei)
+        
+        if(that.start == '天黑了'&&that.audioTianhei == 1) {
+          that.audioTianhei = 0
+          that.audioToupiao = 1
+          console.log('请'+that.whodie+'发表遗言')
+          that.textToAudio('请'+that.whodie+'发表遗言')
+        }
+
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+          that.humanWait()
+        }, 3000)
+      console.log("akdjfklsjadlkjf")
+  },
+//平民等待结束-----------------------------------------------------------------------------------------------------
+
+//守卫等待-----------------------------------------------------------------------------------------------------
+  guardWait() {
+      let that = this
+        setTimeout(function wWait() {
+          //检查阶段是否为狼人阶段
+          //检查是否是白天，预言家后是白天
+          //检查是否被杀，被杀遗言
+          //检查是否为自己发言阶段
+          //检查投票阶段
+          //检查是否被投票，被投遗言
+          //检查天黑，投票结束天黑
+          that.wolfWait()
+        }, 2000)
+      console.log("akdjfklsjadlkjf")
+  },
+//守卫等待结束-----------------------------------------------------------------------------------------------------
+
+//女巫等待-----------------------------------------------------------------------------------------------------
+  witchWait() {
+    let that = this
+        setTimeout(function wWait() {
+          //检查阶段是否为狼人阶段
+          //检查是否是白天，预言家后是白天
+          //检查是否被杀，被杀遗言
+          //检查是否为自己发言阶段
+          //检查投票阶段
+          //检查是否被投票，被投遗言
+          //检查天黑，投票结束天黑
+          that.wolfWait()
+        }, 2000)
+      console.log("akdjfklsjadlkjf")
+  },
+//女巫等待结束-----------------------------------------------------------------------------------------------------
+
+//猎人等待-----------------------------------------------------------------------------------------------------
+  huntsmanWait() {
+     let that = this
+        setTimeout(function wWait() {
+          //检查阶段是否为狼人阶段
+          //检查是否是白天，预言家后是白天
+          //检查是否被杀，被杀遗言
+          //检查是否为自己发言阶段
+          //检查投票阶段
+          //检查是否被投票，被投遗言
+          //检查天黑，投票结束天黑
+          that.wolfWait()
+        }, 2000)
+      console.log("akdjfklsjadlkjf")
+  },
+//猎人结束-----------------------------------------------------------------------------------------------------
+
+
+  //天黑
+  twilight() {
+    this.day = 0
+  },
+
+  //狼人投票
+  wolfvote(hname2) {
+            vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+    this.speechLock = 1
+    this.lastspeechLock = 1
+    this.voteLock = 1
+    this.killLock = 0
+    this.predictLock = 1
+    console.log(hname2)
+     fetch.fetch({
+        url: this.url+'/room/wolfvote/'+this.rname+'/'+this.hname+'/'+hname2,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        console.log(res.data.data)
+        console.log("投了"+hname2)
+        // this.htype = res.data.data.htype
+        // this.hnum = res.data.data.hnum
+        // this.hstart = res.data.data.hstart
+        // this.die = res.data.data.die
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+      
+  },
+
+  //预言家预测
+  funpredict(hname2) {
+            vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+    this.speechLock = 1
+    this.lastspeechLock = 1
+    this.voteLock = 1
+    this.killLock = 1
+    this.predictLock = 1
+    console.log(hname2)
+     fetch.fetch({
+        url: this.url+'/room/predict/'+this.rname+'/'+this.hname+'/'+hname2,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        console.log(res.data.data)
+        console.log("预言了"+hname2)
+        // this.htype = res.data.data.htype
+        // this.hnum = res.data.data.hnum
+        // this.hstart = res.data.data.hstart
+        // this.die = res.data.data.die
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+      
+  },
+
+  //女巫用药
+  witch() {},
+
+  //守卫
+  guard() {},
+
+  //天亮了
+  dawn() {
+    this.day = 1
+  },
+
+  //猎人开枪
+  gun() {},
+
+  //发言
+  speech() {
+    this.speechLock = 0
+    this.lastspeechLock = 1
+    this.voteLock = 1
+    this.killLock = 1
+    this.predictLock = 1
+    var data2 = {
+      rname: this.rname,
+      hname: this.hname,
+      // hnum: 6
+      // content: this.content,
+      // rname: this.rname,
+      // hname: this.hname,
+      // hnum: this.hnum
+      content: this.eventName,
+    }
+    fetch.fetch({
+      url: 'http://8.142.124.20:8181/room/talk',
+      method: 'post',
+      data: data2,
+      responseType: 'json',
+      
+    })
+    .then(res => {
+
+    })
+  },
+
+  lastspeech() {
+    this.die2 = 1;
+    this.speechLock = 1
+    this.lastspeechLock = 0
+    this.voteLock = 1
+    this.killLock = 1
+    this.predictLock = 1
+    var data2 = {
+      rname: this.rname,
+      hname: this.hname,
+      // hnum: 6
+      // content: '',
+      // rname: this.rname,
+      // hname: this.hname,
+      // hnum: this.hnum
+      content: this.eventName,
+    }
+    fetch.fetch({
+      url: 'http://8.142.124.20:8181/room/lasttalk',
+      method: 'post',
+      data: data2,
+      responseType: 'json',
+      
+    })
+    .then(res => {
+    })
+  },
+
+  //全体投票
+  vote(hname2) {
+            vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+      this.speechLock = 1
+      this.lastspeechLock = 1
+      this.voteLock = 0
+      this.killLock = 1
+      this.predictLock = 1
+      console.log(hname2)
+      fetch.fetch({
+        url: this.url+'/room/vote/'+this.rname+'/'+this.hname+'/'+hname2,
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        console.log(res.data.data)
+        console.log("投了"+hname2)
+        // this.htype = res.data.data.htype
+        // this.hnum = res.data.data.hnum
+        // this.hstart = res.data.data.hstart
+        // this.die = res.data.data.die
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+      
+  },
+
+  //语音
+  god() {},
+
+  initAsr() {
+    let that = this
+    asr.init({
+      fail: function () {
+        that.$app.$def.makeToast('init failed!')
+      }
+    })
+    asr.onpartialresult = ({ result }) => {
+      this.eventName = this.nameBackUp + `${result}`
+    }
+    asr.oncompleteresult = ({ result }) => {
+      this.eventName = this.nameBackUp + `${result.match(/\[(.*)\]/)[1]}`
+    }
+    asr.onerror = (error) => {
+      this.text = `onerror: ${error}`
+    }
+  },
+  startAsr() {
+    let that = this
+    this.scale = 'scale'
+    this.nameBackUp = this.eventName
+    asr.start({
+      success: function () {
+        //多调用几遍使震动明显一些
+        vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+        vibrator.vibrate({ mode: 'short' })
+        console.log("开始")
+      },
+      fail: function (data, code) {
+        that.eventName = `start fail, code=${code}, data=${data}`
+      }
+    })
+    //切换到结束发言
+    this.talkstart = 1;
+  },
+  endAsr() {
+    let that = this
+    this.scale = 'stop'
+    asr.stop({
+      success: function () {
+        console.log("结束")
+        //保存说的话//退出操作
+        that.talkstart = 0
+        if (that.die == 0) {
+          that.speech()
+        }
+        if (that.die == 1) {
+          that.lastspeech()
+        }
+
+       },
+      fail: function (data, code) {
+        that.eventName = `stop fail, code=${code}, data=${data}`
+      }
+    })
+
+  },
+
+  updateValue(evt) {
+    this.eventName = evt.value
+  },
+  onDestroy() {
+    asr.close()
+  },
+  getUrl(){
+    return "height:80%;width:100%;"
+  },
+  getUrl2(h){
+    return "../../assets/image/"+h+".png"
+  },
+  
+  refresh() {
+    let that = this
+    console.log(this.hasMoreData)
+    setTimeout(function() {
+        fetch.fetch({
+            url: that.url+'/talk/findByName/'+that.rname,
+            method: 'get',
+            responseType: 'text',
+          })
+          .then(res => {
+            that.hasMoreData = 0
+            that.talk = JSON.parse(res.data.data)
+            console.log(that.hasMoreData)
+          })
+          .catch(error => {
+            console.log(that.data)
+          })
+          
+      }, 2000)
+      that.hasMoreData = 1
+  },
+  //由于1079不支持合成语音，1100又不支持asr= =，淦，用百度的合成语音了 ，快应用录音没支持pcm
+  textToAudio(h) {
+    // 未加锁
+    if(this.voiceLock == 1) {
+      let that = this
+      fetch.fetch({
+        url: 'https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=MTcAZrWb1spWim7ODSI1uNP9&client_secret=C6iMyyCCfgyPkKhq5m2ybfhmtgGqh6l6',
+        method: 'get',
+        responseType: 'text',
+      })
+      .then(res => {
+        this.audioSrc = JSON.parse(res.data.data).refresh_token
+        this.audioSrc = 'http://tsn.baidu.com/text2audio?lan=zh&ctp=1&cuid=abcdxxx&tok='+this.audioSrc+'&tex='+h+'&vol=9&per=0&spd=5&pit=5&aue=3'
+        console.log(this.audioSrc)
+        audio.src = this.audioSrc
+        audio.play()
+      })
+      .catch(error => {
+        console.log(that.data)
+      })
+    }
+  },
+  voiceLockFun() {
+    this.voiceLock = 0
+  },
+  voiceUnlockFun() {
+    this.voiceLock = 1
+  }
+}
+
+</script>
+
+<style lang="less">
+@import '../../assets/styles/style.less';
+
+.btn {
+    width: 200px;
+    height: 86px;
+    margin: 20px;
+    margin-top: 75px;
+    border-radius: 43px;
+    background-color: #4286f5;
+    font-size: 30px;
+    text-align: center;
+    color: #ffffff;
+  }
+.page-container {
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0eb;
+  flex-direction: column;
+  
+  .btnitem {
+    flex-wrap: wrap;
+    
+    background-color: #ffffff;
+    /* flex-direction: column; */
+    text-align: center;
+    width: 100%;
+    border-radius: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    .btnS {
+      width: 17%;
+      height: 30%;
+      margin: 10px;
+      border-radius: 10px;
+      text-align: center;
+      /* background-color: #4286f5; */
+      font-size: 40px;
+      color: #000000;
+    }
+  }
+  .item-product {
+    background-color: #ffffff;
+    flex-direction: column;
+    width: 100%;
+    border-radius: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    .product-text-wrap {
+      width: 100%;
+      justify-content: center;
+      padding: 16px;
+      background-color: #ffffff;
+      flex-direction: column;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      .product-text-name {
+        color: #000000;
+        font-size: 32px;
+      }
+      .product-text-price {
+        margin-top: 8px;
+        color: #ec4848;
+        font-size: 30px;
+      }
+    }
+  }
+  .load-status {
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+  }
+      .event-input {
+      height: 100px;
+      border-radius: 20px;
+      background-color: #ffffff;
+      border: 5px solid rgb(238, 240, 245);
+      flex-direction: row;
+      > input {
+        flex-grow: 1;
+        padding: 10px 30px;
+      }
+    }
+}
+</style>

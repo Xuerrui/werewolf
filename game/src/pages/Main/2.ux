@@ -4,16 +4,23 @@
 
 
     <!-- ================================================房间信息==================================================== -->
+
     <div class="roominfo" style="height:5%;flex-wrap:wrap;">
+        <a if="voiceLock == 0" style="background-color: #4286f5; font-size: 20px; color: #ffffff;" onclick="voiceUnlockFun()">语音</a>
+        <a if="voiceLock == 0" style="background-color: #ff0000; font-size: 20px; color: #ffffff;" onclick="voiceUnlockFun()">关</a>
+        
+        <a if="voiceLock == 1" style="background-color: #20c200; font-size: 20px; color: #ffffff;" onclick="voiceLockFun()">开</a>
+        <a if="voiceLock == 1" style="background-color: #4286f5; font-size: 20px; color: #ffffff;" onclick="voiceLockFun()">语音</a>
         <text style="margin-left: 10px;">房间:{{rname}}</text>
         <text style="margin-left: 10px;">名字:{{hname}}</text>
-        <text style="margin-left: 10px;">身份:{{htype}} </text>
-        <text style="margin-left: 10px;">号码:{{hstart}} </text>
+        <text style="margin-left: 10px;">身份:{{htype}}</text>
+        <text style="margin-left: 10px;">号码:{{hstart}}</text>
     </div>
     <!-- 预言家语言栏 -->
     <div class="roominfo" if="htype=='预言家'" style="height:7%;flex-wrap:wrap;">
         <text style="margin-left: 10px;font-size:20px">{{predict}}</text>
     </div>
+    
     <!-- 女巫用药栏 -->
     <!-- <div class="roominfo" if="htype=='女巫'" style="height:5%;flex-wrap:wrap;">
         <text style="margin-left: 10px;">房间:{{rname}}</text>
@@ -24,7 +31,8 @@
 
 
 
-
+    <div style="height:1px;width:100%;background-color:#808080;">
+    </div>
     <!-- =============================操作部分================================ -->
     <div class="opertion" style="height:43%;">
       <!-- 开始发言 -->
@@ -35,31 +43,22 @@
       </div> -->
       <!-- 胜利结算 -->
       <div if="start=='好人胜利'">
-        <image src="../../assets/image/好人胜利.png"></image>
+        <image src="../../assets/image/好人胜利.png" style="width:100%;height:100%;"></image>
       </div>
       <div elif="start=='狼人胜利'">
-        <image src="../../assets/image/狼人胜利.png"></image>
+        <image src="../../assets/image/狼人胜利.png" style="width:100%;height:100%;"></image>
       </div>
       <div elif="die2==1">
-        <image src="../../assets/image/死亡.png"></image>
+        <image src="../../assets/image/死亡.png" style="width:100%;height:100%;"></image>
       </div>
 
 
       <!-- 狼人杀人操作 -->
-      <!-- <div elif="start=='狼人'&&htype=='狼人'" class="btnitem">
-        <div class="btnS"  for="roomall" if="$item.die==0" style="flex-wrap:wrap;text-align:center;">
-          <a onclick="wolfvote($item.hname)" style="{{getUrl($item.hstart)}}"></a>
-          <text style="height:20%;width:100%;text-align:center;font-size:25">{{$item.hstart}}:{{$item.hname}}</text>
-        </div>
-      </div> -->
-
       <div elif="start=='狼人'&&htype=='狼人'&&killLock==1" class="btnitem">
         <div onclick="wolfvote($item.hname)" class="btnS"  for="roomall" if="$item.die==0" style="flex-wrap:wrap;text-align:center;">
-          <!-- <a > -->
             <image src="{{getUrl2($item.hstart)}}" style="height:80%;width:100%;">
             </image>
             <text style="height:20%;width:100%;text-align:center;font-size:25">{{$item.hstart}}:{{$item.hname}}</text>
-          <!-- </a> -->
         </div>
       </div>
 
@@ -67,11 +66,9 @@
       <!-- 预言家预言操作 -->
       <div elif="start=='预言家'&&htype=='预言家'&&predictLock==1" class="btnitem">
         <div onclick="funpredict($item.hname)" class="btnS"  for="roomall" if="$item.die==0" style="flex-wrap:wrap;text-align:center;">
-          <!-- <a > -->
             <image src="{{getUrl2($item.hstart)}}" style="height:80%;width:100%;">
             </image>
             <text style="height:20%;width:100%;text-align:center;font-size:25">{{$item.hstart}}:{{$item.hname}}</text>
-          <!-- </a> -->
         </div>
       </div>
 
@@ -129,10 +126,10 @@
 
       <!-- 白天 -->
       <div elif="day==1">
-        <image src="../../assets/image/白天.png">白天</image>
+        <image src="../../assets/image/白天.png" style="width:100%;height:100%;">白天</image>
       </div>
       <div else="day==0">
-        <image src="../../assets/image/黑夜.png">黑夜</image>
+        <image src="../../assets/image/黑夜.png" style="width:100%;height:100%;">黑夜</image>
       </div>
     </div>
 
@@ -140,15 +137,15 @@
 
 
 
-
+    <div style="height:1px;width:100%;background-color:#808080;"></div>
     <!-- ============================================对话页面讨论列表===================================================== -->
     <div class = "process" style="height:50%;">
-      <list class="page-container" onscrollbottom="refresh">
+      <list class="page-container" onscrollbottom="refresh()">
 
         <!-- 聊天列表 -->
         <list-item type="product" class="item-product" for="talk">
           <div class="product-text-wrap">
-            <text class="product-text-name" if="{{$item.hname != ''&&$item.hname != null}}">{{$item.hname+'说:'}}</text>
+            <text class="product-text-name" if="{{$item.hname != ''&&$item.hname != null}}">{{$item.hname+'发言:'}}</text>
             <text class="product-text-name">{{$item.content}}</text>
           </div>
         </list-item>
@@ -166,7 +163,7 @@
 
 
 <script>
-import asr from '@service.asr'
+// import asr from '@service.asr'
 import router from '@system.router'
 import fetch from '@system.fetch'
 import vibrator from '@system.vibrator'
@@ -177,7 +174,7 @@ export default {
     round: 1,
     day: 0, //0代表黑夜，1代表白天
     start: '狼人', //游戏阶段
-    hname: 'xri',
+    hname: 'xr',
     htype: '狼人',
     hstart: 0, //发到的号码牌
     predict: '', //预言家预测
@@ -191,6 +188,7 @@ export default {
     scale: '',
     
     audioSrc:'',
+    voiceLock: 0,
     //audio锁子
     audioTianhei: 1,//遗言2轮
     audioLangren: 1,
@@ -198,6 +196,7 @@ export default {
     audioTianliang: 1,
     audioTaolun: 1,
     audioToupiao: 1,
+    audioWin: 1,
     //行动锁
     killLock: 1,
     predictLock: 1,
@@ -218,7 +217,7 @@ export default {
 
 //初始化Asr()---------------------------------------------------------------------
 
-      this.initAsr()
+      // this.initAsr()
 
 //获得讨论列表----------------------------------------------------------------------------------------------
       
@@ -266,7 +265,9 @@ export default {
         this.whotalk = this.roomall[0].whotalk
         this.predict = this.roomall[0].predict
         this.whodie = this.roomall[0].whodie
-        
+        if(this.hname == this.roomall[0].hname){
+          this.voiceLock = 1
+        }
       })
       .catch(error => {
         console.log(that.data)
@@ -321,6 +322,23 @@ export default {
   wolfWait() {
     let that = this
       setTimeout(function wWait() {
+      //获得讨论列表----------------------------------------------------------------------------------------------
+      
+      // fetch.fetch({
+      //   url: that.url+'/talk/findByName/'+that.rname,
+      //   method: 'get',
+      //   responseType: 'text',
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   that.talk = JSON.parse(res.data.data)
+      // })
+      // .catch(success => {
+      // })
+      // .catch(error => {
+      //   console.log(that.data)
+      // })
+        
         //获得自己信息--------------------------------------------------------
 
       fetch.fetch({
@@ -367,26 +385,36 @@ export default {
 
         //6个人模式
         if(that.start == '狼人'&&that.audioLangren == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
           that.audioLangren = 0
-          that.audioToupiao = 1
           that.audioTianhei = 1
-          that.textToAudio('天黑请闭眼，狼人请睁眼。请选择您要杀的对象')
+          that.audioToupiao = 1
+          that.textToAudio('天黑请闭眼，狼人请睁眼。狼人开始行动了')
            that.day = 0
         }
 
         
         if(that.start == '预言家'&&that.audioYuyanjia == 1) {
-          that.audioLangren = 1
+          that.audioTaolun = 1
+          that.audioTianliang = 1
           that.audioYuyanjia = 0
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           console.log('播放预言家')
-          that.textToAudio('狼人请闭眼。预言家请睁眼')
+          that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')
         }
         if(that.start == '天亮了'&&that.audioTianliang == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 0
           that.audioYuyanjia = 1
           that.audioLangren = 1
-          that.audioTianliang = 0
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           if(that.pdie == 1) {
-            that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
+            that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')//播报预言家4秒再进入
             setTimeout(function(){
               that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
               that.day = 1
@@ -404,6 +432,8 @@ export default {
           that.audioTianliang = 1
           that.audioYuyanjia = 1
           that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           if(that.pdie == 1) {
             if(that.whodie == '') {
               that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
@@ -430,20 +460,48 @@ export default {
           }
         }
         if(that.start == '投票'&&that.audioToupiao == 1) {
-          that.audioToupiao = 0
+          that.audioTaolun = 1
           that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 0
           that.textToAudio('讨论完毕请开始投票')
         }
-        
-        console.log('播天黑了')
-        console.log(that.start)
-        console.log(that.audioTianhei)
-        
+
         if(that.start == '天黑了'&&that.audioTianhei == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
           that.audioTianhei = 0
           that.audioToupiao = 1
           console.log('请'+that.whodie+'发表遗言')
           that.textToAudio('请'+that.whodie+'发表遗言')
+        }
+
+        if(that.start == '狼人胜利'&&that.audioWin == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.audioWin = 0
+          console.log('狼人胜利')
+          that.textToAudio('狼人胜利')
+        }
+
+        if(that.start == '好人胜利'&&that.audioWin == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.audioWin = 0
+          console.log('好人胜利')
+          that.textToAudio('好人胜利')
         }
 
       })
@@ -453,6 +511,7 @@ export default {
           that.wolfWait()
         }, 3000)
       console.log("akdjfklsjadlkjf")
+      
   },
 //狼人等待函数结束-----------------------------
 
@@ -461,9 +520,25 @@ export default {
 
 //预言家等待-----------------------------------------------------------------------------------------------------
   prophetWait() {
-
-let that = this
+    let that = this
       setTimeout(function wWait() {
+      //获得讨论列表----------------------------------------------------------------------------------------------
+      
+      // fetch.fetch({
+      //   url: that.url+'/talk/findByName/'+that.rname,
+      //   method: 'get',
+      //   responseType: 'text',
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   that.talk = JSON.parse(res.data.data)
+      // })
+      // .catch(success => {
+      // })
+      // .catch(error => {
+      //   console.log(that.data)
+      // })
+        
         //获得自己信息--------------------------------------------------------
 
       fetch.fetch({
@@ -510,26 +585,36 @@ let that = this
 
         //6个人模式
         if(that.start == '狼人'&&that.audioLangren == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
           that.audioLangren = 0
-          that.audioToupiao = 1
           that.audioTianhei = 1
-          that.textToAudio('天黑请闭眼，狼人请睁眼。请选择您要杀的对象')
+          that.audioToupiao = 1
+          that.textToAudio('天黑请闭眼，狼人请睁眼。狼人开始行动了')
            that.day = 0
         }
 
         
         if(that.start == '预言家'&&that.audioYuyanjia == 1) {
-          that.audioLangren = 1
+          that.audioTaolun = 1
+          that.audioTianliang = 1
           that.audioYuyanjia = 0
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           console.log('播放预言家')
-          that.textToAudio('狼人请闭眼。预言家请睁眼')
+          that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')
         }
         if(that.start == '天亮了'&&that.audioTianliang == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 0
           that.audioYuyanjia = 1
           that.audioLangren = 1
-          that.audioTianliang = 0
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           if(that.pdie == 1) {
-            that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
+            that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')//播报预言家4秒再进入
             setTimeout(function(){
               that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
               that.day = 1
@@ -547,6 +632,8 @@ let that = this
           that.audioTianliang = 1
           that.audioYuyanjia = 1
           that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           if(that.pdie == 1) {
             if(that.whodie == '') {
               that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
@@ -573,8 +660,12 @@ let that = this
           }
         }
         if(that.start == '投票'&&that.audioToupiao == 1) {
-          that.audioToupiao = 0
+          that.audioTaolun = 1
           that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 0
           that.textToAudio('讨论完毕请开始投票')
         }
         
@@ -582,12 +673,41 @@ let that = this
         console.log(that.start)
         console.log(that.audioTianhei)
         
-        if(that.start == '天黑了'&&that.audioTianhei == 1) {
+            if(that.start == '天黑了'&&that.audioTianhei == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
           that.audioTianhei = 0
           that.audioToupiao = 1
           console.log('请'+that.whodie+'发表遗言')
           that.textToAudio('请'+that.whodie+'发表遗言')
         }
+
+        if(that.start == '狼人胜利'&&that.audioWin == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.audioWin = 0
+          console.log('狼人胜利')
+          that.textToAudio('狼人胜利')
+        }
+
+        if(that.start == '好人胜利'&&that.audioWin == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.audioWin = 0
+          console.log('好人胜利')
+          that.textToAudio('好人胜利')
+        }
+
 
       })
       .catch(error => {
@@ -602,8 +722,25 @@ let that = this
 
 //平民等待-----------------------------------------------------------------------------------------------------
   humanWait() {
-let that = this
+    let that = this
       setTimeout(function wWait() {
+      //获得讨论列表----------------------------------------------------------------------------------------------
+      
+      // fetch.fetch({
+      //   url: that.url+'/talk/findByName/'+that.rname,
+      //   method: 'get',
+      //   responseType: 'text',
+      // })
+      // .then(res => {
+      //   console.log(res)
+      //   that.talk = JSON.parse(res.data.data)
+      // })
+      // .catch(success => {
+      // })
+      // .catch(error => {
+      //   console.log(that.data)
+      // })
+        
         //获得自己信息--------------------------------------------------------
 
       fetch.fetch({
@@ -650,26 +787,36 @@ let that = this
 
         //6个人模式
         if(that.start == '狼人'&&that.audioLangren == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
           that.audioLangren = 0
-          that.audioToupiao = 1
           that.audioTianhei = 1
-          that.textToAudio('天黑请闭眼，狼人请睁眼。请选择您要杀的对象')
+          that.audioToupiao = 1
+          that.textToAudio('天黑请闭眼，狼人请睁眼。狼人开始行动了')
            that.day = 0
         }
 
         
         if(that.start == '预言家'&&that.audioYuyanjia == 1) {
-          that.audioLangren = 1
+          that.audioTaolun = 1
+          that.audioTianliang = 1
           that.audioYuyanjia = 0
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           console.log('播放预言家')
-          that.textToAudio('狼人请闭眼。预言家请睁眼')
+          that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')
         }
         if(that.start == '天亮了'&&that.audioTianliang == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 0
           that.audioYuyanjia = 1
           that.audioLangren = 1
-          that.audioTianliang = 0
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           if(that.pdie == 1) {
-            that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
+            that.textToAudio('狼人请闭眼。预言家请睁眼，您想知道谁的身份')//播报预言家4秒再进入
             setTimeout(function(){
               that.textToAudio('预言家请闭眼，天亮了，昨天晚上'+that.whodie+'死了，请发表遗言')
               that.day = 1
@@ -687,6 +834,8 @@ let that = this
           that.audioTianliang = 1
           that.audioYuyanjia = 1
           that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
           if(that.pdie == 1) {
             if(that.whodie == '') {
               that.textToAudio('狼人请闭眼。预言家请睁眼')//播报预言家4秒再进入
@@ -713,8 +862,12 @@ let that = this
           }
         }
         if(that.start == '投票'&&that.audioToupiao == 1) {
-          that.audioToupiao = 0
+          that.audioTaolun = 1
           that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 0
           that.textToAudio('讨论完毕请开始投票')
         }
         
@@ -723,18 +876,47 @@ let that = this
         console.log(that.audioTianhei)
         
         if(that.start == '天黑了'&&that.audioTianhei == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
           that.audioTianhei = 0
           that.audioToupiao = 1
           console.log('请'+that.whodie+'发表遗言')
           that.textToAudio('请'+that.whodie+'发表遗言')
         }
-        
+
+        if(that.start == '狼人胜利'&&that.audioWin == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.audioWin = 0
+          console.log('狼人胜利')
+          that.textToAudio('狼人胜利')
+        }
+
+        if(that.start == '好人胜利'&&that.audioWin == 1) {
+          that.audioTaolun = 1
+          that.audioTianliang = 1
+          that.audioYuyanjia = 1
+          that.audioLangren = 1
+          that.audioTianhei = 1
+          that.audioToupiao = 1
+          that.audioWin = 0
+          console.log('好人胜利')
+          that.textToAudio('好人胜利')
+        }
+
+
       })
       .catch(error => {
         console.log(that.data)
       })
           that.humanWait()
-        },3000)
+        }, 3000)
       console.log("akdjfklsjadlkjf")
   },
 //平民等待结束-----------------------------------------------------------------------------------------------------
@@ -1034,6 +1216,7 @@ let that = this
   
   refresh() {
     let that = this
+    console.log(this.hasMoreData)
     setTimeout(function() {
         fetch.fetch({
             url: that.url+'/talk/findByName/'+that.rname,
@@ -1041,23 +1224,23 @@ let that = this
             responseType: 'text',
           })
           .then(res => {
-            const result = res
             that.hasMoreData = 0
             that.talk = JSON.parse(res.data.data)
-            console.log(that.talk)
+            console.log(that.hasMoreData)
           })
           .catch(error => {
             console.log(that.data)
           })
           
-      }, 1000)
+      }, 2000)
       that.hasMoreData = 1
   },
-  refresh(hname) {console.log(hname)},
   //由于1079不支持合成语音，1100又不支持asr= =，淦，用百度的合成语音了 ，快应用录音没支持pcm
   textToAudio(h) {
-    let that = this
-    fetch.fetch({
+    // 未加锁
+    if(this.voiceLock == 1) {
+      let that = this
+      fetch.fetch({
         url: 'https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id=MTcAZrWb1spWim7ODSI1uNP9&client_secret=C6iMyyCCfgyPkKhq5m2ybfhmtgGqh6l6',
         method: 'get',
         responseType: 'text',
@@ -1072,8 +1255,16 @@ let that = this
       .catch(error => {
         console.log(that.data)
       })
+    }
   },
+  voiceLockFun() {
+    this.voiceLock = 0
+  },
+  voiceUnlockFun() {
+    this.voiceLock = 1
+  }
 }
+
 </script>
 
 <style lang="less">
